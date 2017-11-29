@@ -1,5 +1,6 @@
 ﻿using System;
 using ClosedXML.Excel;
+using System.Collections.Generic;
 
 namespace XlsFormat
 {
@@ -10,11 +11,14 @@ namespace XlsFormat
             Console.WriteLine("Hello World!");
 
             var codesTable = new CodesTableC("/home/awake-monoblock/xlsx/Коды ТН ВЭД ОБЩАЯ база.xlsx");
+           
 
-            for (int i = 0; i < codesTable.codes.Count; ++i){
-                Console.WriteLine(codesTable.codes[i] + " " + codesTable.names[i]);
+            foreach(KeyValuePair<string, UInt64> entry in codesTable.codes)
+            {
+                Console.WriteLine (entry.Key + " " + entry.Value);
+                // do something with entry.Value or entry.Key
             }
-
+               
             //workbook.SaveAs("HelloWorld.xlsx");
         }
     }

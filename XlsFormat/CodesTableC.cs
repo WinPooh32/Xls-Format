@@ -1,13 +1,14 @@
 ﻿using System;
-using System.Collections;
+using System.Collections.Generic;
 using ClosedXML.Excel;
 
 namespace XlsFormat
 {
     public class CodesTableC
     {
-        public ArrayList names = new ArrayList();
-        public ArrayList codes = new ArrayList();
+        public Dictionary<String, UInt64> codes = new Dictionary<String, UInt64>(500);
+//        public ArrayList names = new ArrayList();
+//        public ArrayList codes = new ArrayList();
 
         public CodesTableC(String file)
         {
@@ -17,31 +18,33 @@ namespace XlsFormat
 
                 var nameColumn = worksheet.Columns("A");
                 var codeColumn = worksheet.Columns("B");
-
+               
                 var cellsA = nameColumn.CellsUsed();
                 var cellsB = codeColumn.CellsUsed();
 
-                //считываем столбец имен
-                var excludeHeader = true;
-                foreach (IXLCell cell in cellsA){
-                    if(excludeHeader){
-                        excludeHeader = false;
-                        continue;
-                    }
-                    names.Add(cell.GetValue<String>().Trim());
-                }
+                var enumerA = cellsA.GetEnumerator();
+                var enumerB = cellsB.GetEnumerator();
 
-                //столбец кодов
-                excludeHeader = true;
-				foreach (IXLCell cell in cellsB)
-				{
-                    if(excludeHeader){
-                        excludeHeader = false;
-                        continue;
+                //пропускаем заголовки
+                enumerA.MoveNext(); enumerB.MoveNext();
+
+                int i = 0;
+                while(enumerA.MoveNext() && enumerB.MoveNext()){
+                    var key = enumerA.Current.GetValue<String>().Trim();
+                    var val = Convert.ToUInt64(enumerB.Current.GetValue<String>().Trim());
+
+                    try{
+                        codes.Add(key, val);
                     }
-                    Console.WriteLine(cell.GetValue<String>().Trim());
-                    codes.Add(Convert.ToUInt64(cell.GetValue<String>().Trim(), 10));
-				}
+                    catch(Exception ex){
+                    
+                    }
+
+
+                    key = null;
+
+                    Console.WriteLine(++i);
+                }
 
                 workbook = null;
             }
