@@ -22,20 +22,32 @@ namespace XlsFormat
                 var cellsB = codeColumn.CellsUsed();
 
                 //считываем столбец имен
+                var excludeHeader = true;
                 foreach (IXLCell cell in cellsA){
+                    if(excludeHeader){
+                        excludeHeader = false;
+                        continue;
+                    }
                     names.Add(cell.GetValue<String>().Trim());
                 }
 
-                //столбец 
+                //столбец кодов
+                excludeHeader = true;
 				foreach (IXLCell cell in cellsB)
 				{
-                    codes.Add(cell.GetValue<String>().Trim());
+                    if(excludeHeader){
+                        excludeHeader = false;
+                        continue;
+                    }
+                    Console.WriteLine(cell.GetValue<String>().Trim());
+                    codes.Add(Convert.ToUInt64(cell.GetValue<String>().Trim(), 10));
 				}
 
                 workbook = null;
             }
             catch(Exception ex){
-                throw new ArgumentException("Error in file: " + file);
+                Console.WriteLine(ex);
+                throw new ArgumentException("[CodesTableC] Error in file: " + file);
             }
         }
     }

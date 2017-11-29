@@ -9,7 +9,7 @@ namespace XlsFormat
         {
             Console.WriteLine("Hello World!");
 
-            var codesTable = new CodesTableC("/home/awake-monoblock/Projects/XlsFormat/XlsFormat/bin/Debug/1.xlsx");
+            var codesTable = new CodesTableC("/home/awake-monoblock/xlsx/Коды ТН ВЭД ОБЩАЯ база.xlsx");
 
             for (int i = 0; i < codesTable.codes.Count; ++i){
                 Console.WriteLine(codesTable.codes[i] + " " + codesTable.names[i]);
