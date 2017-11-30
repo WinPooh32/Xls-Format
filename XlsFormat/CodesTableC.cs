@@ -6,11 +6,9 @@ namespace XlsFormat
 {
     public class CodesTableC
     {
-        public Dictionary<String, UInt64> codes = new Dictionary<String, UInt64>(500);
-//        public ArrayList names = new ArrayList();
-//        public ArrayList codes = new ArrayList();
+        public Dictionary<string, UInt64> codes = new Dictionary<string, UInt64>(500);
 
-        public CodesTableC(String file)
+        public CodesTableC(string file)
         {
             try{
                 var workbook = new XLWorkbook(file);
@@ -28,22 +26,17 @@ namespace XlsFormat
                 //пропускаем заголовки
                 enumerA.MoveNext(); enumerB.MoveNext();
 
-                int i = 0;
                 while(enumerA.MoveNext() && enumerB.MoveNext()){
-                    var key = enumerA.Current.GetValue<String>().Trim();
-                    var val = Convert.ToUInt64(enumerB.Current.GetValue<String>().Trim());
+                    string key = enumerA.Current.GetValue<string>().Trim();
+                    UInt64 val = Convert.ToUInt64(enumerB.Current.GetValue<string>().Trim());
 
                     try{
                         codes.Add(key, val);
                     }
                     catch(Exception ex){
-                    
+                        //игнорируем повторения
+                        Console.WriteLine(ex);
                     }
-
-
-                    key = null;
-
-                    Console.WriteLine(++i);
                 }
 
                 workbook = null;
