@@ -35,7 +35,7 @@ namespace XlsFormat
         public double weightPackage;//вес упаковки
         public double weightGross;//брутто
 
-        public Dictionary<string, List<Product>> goods = new Dictionary<string, List<Product>>(500);
+        public Dictionary<string, List<Product>> goods = new Dictionary<string, List<Product>>(1000);
 
         private Regex priceRegex = new Regex(@"^[\,\.\d+]*");
 
@@ -65,23 +65,11 @@ namespace XlsFormat
         }
 
         private void loadGoods(IXLWorksheet worksheet, ColumnNames columnsMap){
-            var numberColumn        = worksheet.Columns(columnsMap.number);
-            var allPlacesColumn     = worksheet.Columns(columnsMap.allPlaces);
-            var placesByTypeColumn  = worksheet.Columns(columnsMap.placesByType);
-            var nameColumn          = worksheet.Columns(columnsMap.name);
-            var price               = worksheet.Columns(columnsMap.price);
-
-            var cellsNumberColumn        = numberColumn.CellsUsed();
-            var cellsAllPlacesColumn     = allPlacesColumn.CellsUsed();
-            var cellsPlacesByTypeColumn  = placesByTypeColumn.CellsUsed();
-            var cellsNameColumn          = nameColumn.CellsUsed();
-            var cellsPrice               = price.CellsUsed();
-
-            var enumerNumberColumn        = cellsNumberColumn.GetEnumerator();
-            var enumerAllPlacesColumn     = cellsAllPlacesColumn.GetEnumerator();
-            var enumerPlacesByTypeColumn  = cellsPlacesByTypeColumn.GetEnumerator();
-            var enumerNameColumn          = cellsNameColumn.GetEnumerator();
-            var enumerPrice               = cellsPrice.GetEnumerator();
+            var enumerNumberColumn          = Common.getCellsEnumerator (worksheet, columnsMap.number);
+            var enumerAllPlacesColumn       = Common.getCellsEnumerator (worksheet, columnsMap.allPlaces);
+            var enumerPlacesByTypeColumn    = Common.getCellsEnumerator(worksheet, columnsMap.placesByType);
+            var enumerNameColumn            = Common.getCellsEnumerator (worksheet, columnsMap.name);
+            var enumerPrice                 = Common.getCellsEnumerator(worksheet, columnsMap.price);
 
             string key;
             Product val;

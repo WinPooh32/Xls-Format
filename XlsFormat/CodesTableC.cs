@@ -6,7 +6,7 @@ namespace XlsFormat
 {
     public class CodesTableC
     {
-        public Dictionary<string, UInt64> codes = new Dictionary<string, UInt64>(500);
+        public Dictionary<string, UInt64> codes = new Dictionary<string, UInt64>(1000);
 
         public CodesTableC(string file)
         {
@@ -14,14 +14,8 @@ namespace XlsFormat
                 var workbook = new XLWorkbook(file);
                 var worksheet = workbook.Worksheet(1);
 
-                var nameColumn = worksheet.Columns("A");
-                var codeColumn = worksheet.Columns("B");
-               
-                var cellsA = nameColumn.CellsUsed();
-                var cellsB = codeColumn.CellsUsed();
-
-                var enumerA = cellsA.GetEnumerator();
-                var enumerB = cellsB.GetEnumerator();
+                var enumerA = Common.getCellsEnumerator(worksheet, "A");
+                var enumerB = Common.getCellsEnumerator(worksheet, "B");
 
                 //пропускаем заголовки
                 enumerA.MoveNext(); enumerB.MoveNext();
