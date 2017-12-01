@@ -55,6 +55,7 @@
     <Compile Include="CodesTableC.cs" />
     <Compile Include="BatchTableC.cs" />
     <Compile Include="CarsTableC.cs" />
+    <Compile Include="PackingGeneratorC.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

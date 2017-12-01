@@ -23,6 +23,9 @@ namespace XlsFormat
             var codesTable = new CodesTableC("/home/awake-monoblock/xlsx/Коды ТН ВЭД ОБЩАЯ база.xlsx");
             var batchTable = new BatchTableC("/home/awake-monoblock/xlsx/104 партия начальный формат.xlsx");
             var carsTable = new CarsTableC("/home/awake-monoblock/xlsx/ТранспортБД.xlsx");
+            var generatorPacking = new PackingGeneratorC("/home/awake-monoblock/xlsx/шаблоны/Упаковочный лист.xlsx");
+
+            generatorPacking.generatePackingList("/home/awake-monoblock/out.xlsx", batchTable, codesTable, carsTable);
 
 //            foreach(KeyValuePair<string, UInt64> entry in codesTable.codes)
 //            {
