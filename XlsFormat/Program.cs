@@ -12,6 +12,14 @@ namespace XlsFormat
         static public IEnumerator<IXLCell> getCellsEnumerator(IXLWorksheet worksheet, string column){
             return worksheet.Column(column).CellsUsed().GetEnumerator();
         }
+
+        static public string getCellString (IXLWorksheet ws, string cell){
+            return ws.Cell (cell).GetString();
+        }
+
+        static public void setCellString (IXLWorksheet ws, string cell, string value){
+            ws.Cell (cell).SetValue (value);
+        }
     }
 
     class MainClass
@@ -25,7 +33,13 @@ namespace XlsFormat
             var carsTable = new CarsTableC("/home/awake-monoblock/xlsx/ТранспортБД.xlsx");
             var generatorPacking = new PackingGeneratorC("/home/awake-monoblock/xlsx/шаблоны/Упаковочный лист.xlsx");
 
-            generatorPacking.generatePackingList("/home/awake-monoblock/out.xlsx", batchTable, codesTable, carsTable);
+            generatorPacking.generatePackingList(
+                "/home/awake-monoblock/out.xlsx", 
+                batchTable, codesTable, 
+                carsTable.cars[0], 
+                carsTable.drivers[0],
+                "NOMER@12738"
+            );
 
 //            foreach(KeyValuePair<string, UInt64> entry in codesTable.codes)
 //            {
