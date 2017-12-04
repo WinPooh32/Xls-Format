@@ -26,8 +26,6 @@ namespace XlsFormat
     {
         public static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
-
             var codesTable = new CodesTableC("/home/awake-monoblock/xlsx/Коды ТН ВЭД ОБЩАЯ база.xlsx");
             var batchTable = new BatchTableC("/home/awake-monoblock/xlsx/104 партия начальный формат.xlsx");
             var carsTable = new CarsTableC("/home/awake-monoblock/xlsx/ТранспортБД.xlsx");

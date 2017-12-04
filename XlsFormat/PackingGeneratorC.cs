@@ -1,6 +1,8 @@
 ﻿using System;
 using ClosedXML.Excel;
 using System.Globalization;
+using System.Data;
+using System.Collections.Generic;
 
 namespace XlsFormat
 {
@@ -45,7 +47,7 @@ namespace XlsFormat
         private TemplateMap templateMap = new TemplateMap {
             cellDateShortFirst  = "A1",
             cellDateShortSecond = "D8",
-            cellDateFull        = "J13",
+            cellDateFull        = "J12",
 
             cellNumberFirst     = "A1",
             cellNumberSecond    = "D8", 
@@ -118,7 +120,66 @@ namespace XlsFormat
             Common.setCellString(ws, templateMap.cellDriver,            driver.name);
             Common.setCellString(ws, templateMap.cellDriverPassport,    driver.passport);
 
+
+            var footerCopy = ws.Range("A10:M16");
+
+            ws.Cell (1, 16).Value = footerCopy;
+            ws.Range("A10:M16").Delete(XLShiftDeletedCells.ShiftCellsUp);
+
+            var insertTable = GetTable (batchTbl, codesTbl);
+            ws.Cell(9, 1).InsertTable(insertTable);
+
+            footerCopy = ws.Range("P1:AB7");
+            ws.Cell(insertTable.Rows.Count + 10, 1).Value = footerCopy;
+            ws.Range("P1:AB7").Delete(XLShiftDeletedCells.ShiftCellsUp);
+
+            //            ws.Row (9).InsertRowsBelow (insertTable.Rows.Count);
+            // 
+
             workbook.SaveAs(outFile);
+        }
+
+
+        private DataTable GetTable(BatchTableC batchTbl, CodesTableC codesTbl){
+            DataTable table = new DataTable();
+
+            table.Columns.Add("№ П/П", typeof(UInt64));
+            table.Columns.Add("Наименование", typeof(string));
+            table.Columns.Add("Маркировка", typeof(string));
+            table.Columns.Add("пломба", typeof(UInt64));
+            table.Columns.Add("КОД ТНВЭД", typeof(UInt64));
+            table.Columns.Add("Кол.", typeof(UInt32));
+            table.Columns.Add("Ед.изм.", typeof(string));
+            table.Columns.Add("Мест", typeof(Byte));
+            table.Columns.Add("УПАКОВКА", typeof(string));
+            table.Columns.Add("БРУТТО", typeof(double));
+            table.Columns.Add("НЕТТО", typeof(double));
+            table.Columns.Add("ЦЕНА", typeof(double));
+            table.Columns.Add("СТОИМОСТЬ", typeof(double));
+
+            var codes = codesTbl.codes;
+
+            UInt32 i = 0;
+
+            foreach (KeyValuePair<string, List<XlsFormat.BatchTableC.Product>> entry in batchTbl.goods) {
+                var key = entry.Key;
+
+                foreach (XlsFormat.BatchTableC.Product value in entry.Value) {
+                    ++i;
+
+                    ulong code;
+
+                    if (codes.TryGetValue (key, out code)) {
+                        code = 0;
+                    }
+
+                    //FIXME надр нормально распределить
+                    //             № П/П   Наименование    Маркировка  пломба           КОД ТНВЭД   Кол.             Ед.изм. Мест  УПАКОВКА    БРУТТО           НЕТТО   ЦЕНА         СТОИМОСТЬ
+                    table.Rows.Add(i,      value.name,     key,        value.bagNumber, code,       value.allPlaces, "шт.",  0,    "мешок",    value.bagWeight, 0,      value.price, value.price * value.allPlaces);
+                }
+            }
+
+            return table;
         }
     }
 }
