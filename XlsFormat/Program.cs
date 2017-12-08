@@ -45,16 +45,16 @@ namespace XlsFormat
 //                // do something with entry.Value or entry.Key
 //            }
 
-            foreach(KeyValuePair<string, List<XlsFormat.BatchTableC.Product>> entry in batchTable.goods)
-            {
-                foreach (XlsFormat.BatchTableC.Product value in entry.Value) {
-                    Console.WriteLine (entry.Key + " " + value.price);
-                }
-            }
-
-            foreach (Car car in carsTable.cars) {
-                Console.WriteLine (car.name + " " + car.docs + " " + car.vin);
-            }
+//            foreach(KeyValuePair<string, List<XlsFormat.BatchTableC.Product>> entry in batchTable.goods)
+//            {
+//                foreach (XlsFormat.BatchTableC.Product value in entry.Value) {
+//                    Console.WriteLine (entry.Key + " " + value.bagNumber);
+//                }
+//            }
+//
+//            foreach (Car car in carsTable.cars) {
+//                Console.WriteLine (car.name + " " + car.docs + " " + car.vin);
+//            }
 
             //workbook.SaveAs("HelloWorld.xlsx");
         }

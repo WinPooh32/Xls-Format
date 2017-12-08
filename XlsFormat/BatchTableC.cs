@@ -14,6 +14,7 @@ namespace XlsFormat
             public string name;
             public string price;
 
+            public string bagOrderNumber;
             public string bagNumber;
             public string bagWeight;
         }
@@ -28,7 +29,7 @@ namespace XlsFormat
 
             //мешки
             public UInt64 bagNumber;
-            public Decimal bagWeight;
+            public double bagWeight;
         }  
 
         public double weightNet;//нетто
@@ -51,12 +52,13 @@ namespace XlsFormat
                     name = "AK",
                     price = "AO",
 
+                    bagOrderNumber = "A",
                     bagNumber = "B",
                     bagWeight = "C"
                 };
 
                 loadGoods(workbook.Worksheet(1), columnsMap);//Лист “Товары”
-
+                loadBags(workbook.Worksheet(2), columnsMap);
             }
             catch(Exception ex){
                 Console.WriteLine(ex);
@@ -120,8 +122,46 @@ namespace XlsFormat
             }
         }
 
-        private void loadBags(IXLWorksheet worksheet){
+        private void loadBags(IXLWorksheet worksheet, ColumnNames columnsMap){
+            var bagOrderNumberColumn    = Common.getCellsEnumerator (worksheet, columnsMap.bagOrderNumber);
+            var enumerBagNumberColumn   = Common.getCellsEnumerator (worksheet, columnsMap.bagNumber);
+            var enumerBagWeightColumn   = Common.getCellsEnumerator (worksheet, columnsMap.bagWeight);
 
+            //Пропускаем заголовки
+            bagOrderNumberColumn.MoveNext();
+            enumerBagNumberColumn.MoveNext();
+            enumerBagWeightColumn.MoveNext();
+
+            int i = 0;
+
+            while (
+                bagOrderNumberColumn.MoveNext()  &&
+                enumerBagNumberColumn.MoveNext() &&
+                enumerBagWeightColumn.MoveNext()
+            ) {
+                ++i;
+
+                try{
+                    var key = bagOrderNumberColumn.Current.GetValue<string>().Trim();
+                    var bagNumber = Convert.ToUInt64(enumerBagNumberColumn.Current.GetString().Trim());
+                    var bagWeight = Convert.ToDouble(enumerBagWeightColumn.Current.GetString().Trim());
+
+                    var list = goods[key];
+
+                    for(int k = 0; k < list.Count; ++k){
+                        var value = list[k];
+
+                        value.bagNumber = bagNumber;
+                        value.bagWeight = bagWeight;
+
+                        list[k] = value;
+                    }
+                }
+                catch(Exception ex){
+                    Console.WriteLine (i);
+                    Console.WriteLine (ex);
+                }
+            }
         }
 
         private string normalizePrice(string rawPrice){

@@ -121,20 +121,23 @@ namespace XlsFormat
             Common.setCellString(ws, templateMap.cellDriverPassport,    driver.passport);
 
 
+            //копируем футер в другое место и удаляем со старого места
             var footerCopy = ws.Range("A10:M16");
 
             ws.Cell (1, 16).Value = footerCopy;
             ws.Range("A10:M16").Delete(XLShiftDeletedCells.ShiftCellsUp);
-
+            //------
+            //вставляем таблицу со значениями
             var insertTable = GetTable (batchTbl, codesTbl);
             ws.Cell(9, 1).InsertTable(insertTable);
 
+            //копируем футер на новое место с последующим удалением со старого
             footerCopy = ws.Range("P1:AB7");
             ws.Cell(insertTable.Rows.Count + 10, 1).Value = footerCopy;
             ws.Range("P1:AB7").Delete(XLShiftDeletedCells.ShiftCellsUp);
 
-            //            ws.Row (9).InsertRowsBelow (insertTable.Rows.Count);
-            // 
+
+            ws.Cells ("A9:M9").Clear (XLClearOptions.Formats);
 
             workbook.SaveAs(outFile);
         }
@@ -169,13 +172,15 @@ namespace XlsFormat
 
                     ulong code;
 
-                    if (codes.TryGetValue (key, out code)) {
+                    if (!codes.TryGetValue (value.name, out code)) {
                         code = 0;
                     }
 
+                    var netWeight = (value.bagWeight / value.allPlaces) * value.placesByType;
+
                     //FIXME надр нормально распределить
                     //             № П/П   Наименование    Маркировка  пломба           КОД ТНВЭД   Кол.             Ед.изм. Мест  УПАКОВКА    БРУТТО           НЕТТО   ЦЕНА         СТОИМОСТЬ
-                    table.Rows.Add(i,      value.name,     key,        value.bagNumber, code,       value.allPlaces, "шт.",  0,    "мешок",    value.bagWeight, 0,      value.price, value.price * value.allPlaces);
+                    table.Rows.Add(i,      value.name,     key,        value.bagNumber, code,       value.placesByType, "шт.",  0,    "мешок",    value.bagWeight, netWeight,      value.price, value.price * value.placesByType);
                 }
             }
 
@@ -183,4 +188,3 @@ namespace XlsFormat
         }
     }
 }
-
