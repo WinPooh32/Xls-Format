@@ -143,6 +143,18 @@ namespace XlsFormat
         }
 
 
+        private UInt32 CalcItemsCount(BatchTableC batchTbl){
+            Uint32 count = 0;
+            foreach (KeyValuePair<string, List<XlsFormat.BatchTableC.Product>> entry in batchTbl.goods) {
+                var key = entry.Key;
+                foreach (XlsFormat.BatchTableC.Product value in entry.Value) {
+                    ++count;
+                }
+            }
+
+            return count;
+        }
+
         private DataTable GetTable(BatchTableC batchTbl, CodesTableC codesTbl){
             DataTable table = new DataTable();
 
@@ -161,6 +173,8 @@ namespace XlsFormat
             table.Columns.Add("СТОИМОСТЬ", typeof(double));
 
             var codes = codesTbl.codes;
+
+            UInt32 itemsCount = CalcItemsCount (batchTbl);
 
             UInt32 i = 0;
 
