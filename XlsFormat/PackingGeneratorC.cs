@@ -144,7 +144,7 @@ namespace XlsFormat
 
 
         private UInt32 CalcItemsCount(BatchTableC batchTbl){
-            Uint32 count = 0;
+            UInt32 count = 0;
             foreach (KeyValuePair<string, List<XlsFormat.BatchTableC.Product>> entry in batchTbl.goods) {
                 var key = entry.Key;
                 foreach (XlsFormat.BatchTableC.Product value in entry.Value) {

@@ -1,11 +1,13 @@
 ﻿using System;
 using Gtk;
+using XlsFormat;
 
 public partial class MainWindow : Gtk.Window
 {
-	private XlsFormat.CodesTableC tableCodes;
-	private XlsFormat.BatchTableC tableBatch;
-	private XlsFormat.CarsTableC tableCars;
+	private CodesTableC tableCodes;
+	private BatchTableC tableBatch;
+	private CarsTableC tableCars;
+	private string pathTemplatePackingList;
 
 	public MainWindow() : base(Gtk.WindowType.Toplevel)
 	{
@@ -45,6 +47,10 @@ public partial class MainWindow : Gtk.Window
 		if (stackPages.Page < stackPages.NPages)
 		{
 			stackPages.NextPage();
+		}
+		else
+		{
+			
 		}
 	}
 
@@ -118,26 +124,52 @@ public partial class MainWindow : Gtk.Window
 		}
 	}
 
-	private void SavePackingList()
-	{ 
-		//var generatorPacking = new PackingGeneratorC("/home/awake-monoblock/xlsx/шаблоны/Упаковочный лист.xlsx");
+	private void SavePackingList(string path)
+	{
+		try
+		{
+			var generatorPacking = new PackingGeneratorC(pathTemplatePackingList);
 
-		//generatorPacking.generatePackingList(
-		//                "/home/awake-monoblock/out.xlsx", 
-		//                batchTable, codesTable, 
-		//                carsTable.cars[0], 
-		//                carsTable.drivers[0],
-		//                "NOMER@12738"
-		//            );
+			generatorPacking.generatePackingList(
+					path + "\\Упаковочный лист.xlsx", 
+			        tableBatch, tableCodes, 
+					tableCars.cars[combCar.Active],
+					tableCars.drivers[combCar.Active],
+			        "NOMER@12738"
+			);
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine(ex);
+		}
+
 	}
 
 	protected void OnSave(object sender, EventArgs e)
 	{
-		
+		Gtk.FileChooserDialog filechooser =
+		new Gtk.FileChooserDialog("Выберите папку для сохранения",
+		this,
+        FileChooserAction.SelectFolder,
+		"Омена", ResponseType.Cancel,
+		"Открыть", ResponseType.Accept);
+
+	    if (filechooser.Run() == (int)ResponseType.Accept) 
+	    {
+	            SavePackingList(filechooser.Filename);
+	    }
+
+	    filechooser.Destroy();
+	       
 	}
 
 	protected void OnPackSaveAs(object sender, AddedArgs args)
 	{
 		var folderPath = ExtractChooserPath(sender);
+	}
+
+	private void OnTemplatePackingSelected(object sender, EventArgs e)
+	{
+		pathTemplatePackingList = ExtractChooserPath(sender);
 	}
 }

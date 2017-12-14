@@ -47,6 +47,7 @@
     <Reference Include="ClosedXML">
       <HintPath>..\packages\ClosedXML.0.90.0\lib\net452\ClosedXML.dll</HintPath>
     </Reference>
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="gtk-gui\gui.stetic">
@@ -62,6 +63,7 @@
     <Compile Include="BatchTableC.cs" />
     <Compile Include="CarsTableC.cs" />
     <Compile Include="CodesTableC.cs" />
+    <Compile Include="PackingGeneratorC.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
