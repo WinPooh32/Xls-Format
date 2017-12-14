@@ -257,7 +257,7 @@ public partial class MainWindow
 		// Container child vbox7.Gtk.Box+BoxChild
 		this.hpaned1 = new global::Gtk.HPaned();
 		this.hpaned1.Name = "hpaned1";
-		this.hpaned1.Position = 134;
+		this.hpaned1.Position = 1;
 		// Container child hpaned1.Gtk.Paned+PanedChild
 		this.vboxPages = new global::Gtk.VBox();
 		this.vboxPages.Name = "vboxPages";

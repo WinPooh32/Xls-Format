@@ -130,11 +130,16 @@ public partial class MainWindow : Gtk.Window
 		{
 			var generatorPacking = new PackingGeneratorC(pathTemplatePackingList);
 
+			var savePath = path + "\\Упаковочный лист.xlsx";
+
+			var carIdx = combCar.Active;
+			var driverIdx = combDriver.Active;
+
 			generatorPacking.generatePackingList(
-					path + "\\Упаковочный лист.xlsx", 
+					savePath, 
 			        tableBatch, tableCodes, 
-					tableCars.cars[combCar.Active],
-					tableCars.drivers[combCar.Active],
+					tableCars.cars[carIdx],
+					tableCars.drivers[driverIdx],
 			        "NOMER@12738"
 			);
 		}

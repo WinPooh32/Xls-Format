@@ -97,13 +97,13 @@ namespace XlsFormat
             Driver driver,
             string number
         ){
-            string numberAndDate = number + " от " + DateTime.Now.ToString("dd.mm.yy.");
+            string numberAndDate = number + " от " + DateTime.Now.ToString("dd.MM.yy.");
 
             string rawSecondShortDate     = Common.getCellString (ws, templateMap.cellDateShortSecond);
             string rawFullDate      = Common.getCellString (ws, templateMap.cellDateFull);
             string rawFirstNumber   = Common.getCellString (ws, templateMap.cellNumberFirst);
 
-            string fullDate = DateTime.Now.ToString("dd MMMMM yyyy г.",  CultureInfo.CreateSpecificCulture("ru-RU"));
+            string fullDate = DateTime.Now.ToString("dd MMMM yyyy г.",  CultureInfo.CreateSpecificCulture("ru-RU"));
 
             Common.setCellString(ws, templateMap.cellDateFull,          rawFullDate.Replace("{fullDate}", fullDate));
             Common.setCellString(ws, templateMap.cellNumberFirst,       rawFirstNumber.Replace("{numberAndDate}", numberAndDate));
@@ -145,10 +145,11 @@ namespace XlsFormat
 
         private UInt32 CalcItemsCount(BatchTableC batchTbl){
             UInt32 count = 0;
-            foreach (KeyValuePair<string, List<XlsFormat.BatchTableC.Product>> entry in batchTbl.goods) {
+            
+			foreach (KeyValuePair<string, List<XlsFormat.BatchTableC.Product>> entry in batchTbl.goods) {
                 var key = entry.Key;
                 foreach (XlsFormat.BatchTableC.Product value in entry.Value) {
-                    ++count;
+					count += value.placesByType;
                 }
             }
 
@@ -175,6 +176,7 @@ namespace XlsFormat
             var codes = codesTbl.codes;
 
             UInt32 itemsCount = CalcItemsCount (batchTbl);
+			double packageWeight = (double)batchTbl.weightPackage / (double)itemsCount;
 
             UInt32 i = 0;
 
@@ -191,10 +193,11 @@ namespace XlsFormat
                     }
 
                     var netWeight = (value.bagWeight / value.allPlaces) * value.placesByType;
+					var grossWeight = netWeight + packageWeight * value.placesByType;
 
                     //FIXME надр нормально распределить
                     //             № П/П   Наименование    Маркировка  пломба           КОД ТНВЭД   Кол.             Ед.изм. Мест  УПАКОВКА    БРУТТО           НЕТТО   ЦЕНА         СТОИМОСТЬ
-                    table.Rows.Add(i,      value.name,     key,        value.bagNumber, code,       value.placesByType, "шт.",  0,    "мешок",    value.bagWeight, netWeight,      value.price, value.price * value.placesByType);
+					table.Rows.Add(i,      value.name,     key,        value.bagNumber, code,       value.placesByType, "шт.",  0,    "мешок",    grossWeight, netWeight,      value.price, value.price * value.placesByType);
                 }
             }
 

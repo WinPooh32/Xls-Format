@@ -2,6 +2,7 @@
 using ClosedXML.Excel;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.Globalization;
 
 namespace XlsFormat
 {
@@ -17,6 +18,10 @@ namespace XlsFormat
             public string bagOrderNumber;
             public string bagNumber;
             public string bagWeight;
+
+			public string sumNetWeight;
+			public string sumGrossWeight;
+			public string sumPackagesWeight;
         }
 
         public struct Product  
@@ -54,7 +59,11 @@ namespace XlsFormat
 
                     bagOrderNumber = "A",
                     bagNumber = "B",
-                    bagWeight = "C"
+                    bagWeight = "C",
+
+					sumNetWeight = "E1",
+					sumGrossWeight = "E3",
+					sumPackagesWeight = "E2"
                 };
 
                 loadGoods(workbook.Worksheet(1), columnsMap);//Лист “Товары”
@@ -100,7 +109,7 @@ namespace XlsFormat
                         allPlaces       = Convert.ToUInt32(enumerAllPlacesColumn.Current.GetValue<string>().Trim()),
                         placesByType    = Convert.ToUInt32(enumerPlacesByTypeColumn.Current.GetValue<string>().Trim()),
                         name            = enumerNameColumn.Current.GetValue<string>().Trim(),
-                        price           = Convert.ToDecimal( normalizePrice(enumerPrice.Current.GetValue<string>().Trim()) )
+						price           = Decimal.Parse(normalizePrice(enumerPrice.Current.GetValue<string>().Trim()), System.Globalization.NumberStyles.Number)
                     };
 
                     List<Product> values;
@@ -116,13 +125,20 @@ namespace XlsFormat
                     //игнорируем повторения ключа
                     //TODO уведомление
 
-                    Console.WriteLine (i);
+                    Console.WriteLine ("WOW:" + i);
                     Console.WriteLine (ex);
                 }
             }
         }
 
         private void loadBags(IXLWorksheet worksheet, ColumnNames columnsMap){
+
+			//считываем суммы
+			weightNet = Convert.ToDouble(worksheet.Cell(columnsMap.sumNetWeight).GetString().Trim());
+			weightGross = Convert.ToDouble(worksheet.Cell(columnsMap.sumGrossWeight).GetString().Trim());
+			weightPackage = Convert.ToDouble(worksheet.Cell(columnsMap.sumPackagesWeight).GetString().Trim());
+
+
             var bagOrderNumberColumn    = Common.getCellsEnumerator (worksheet, columnsMap.bagOrderNumber);
             var enumerBagNumberColumn   = Common.getCellsEnumerator (worksheet, columnsMap.bagNumber);
             var enumerBagWeightColumn   = Common.getCellsEnumerator (worksheet, columnsMap.bagWeight);
@@ -168,9 +184,11 @@ namespace XlsFormat
             Match match = priceRegex.Match(rawPrice);
 
             if (match.Success) {
-                //для формата decimal
-                //https://msdn.microsoft.com/ru-ru/library/cafs243z(v=vs.110).aspx
-                return match.Value.Replace (',', '.');
+				//для формата decimal
+				//https://msdn.microsoft.com/ru-ru/library/cafs243z(v=vs.110).aspx
+				var norm = match.Value.Replace('.', ',');
+				Console.WriteLine(norm);
+                return norm;
             } else {
                 throw new ArgumentException("[BatchTableC] Broken price: " + rawPrice);
             }

@@ -6,7 +6,7 @@
   </configuration>
   <import>
     <widget-library name="glade-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
-    <widget-library name="../bin/Debug/XlsFormat.exe" internal="true" />
+    <widget-library name="../bin/Release/XlsFormat.exe" internal="true" />
   </import>
   <widget class="Gtk.Window" id="MainWindow" design-size="621 435">
     <action-group name="Default" />
@@ -24,7 +24,7 @@
         <child>
           <widget class="Gtk.HPaned" id="hpaned1">
             <property name="MemberName" />
-            <property name="Position">134</property>
+            <property name="Position">1</property>
             <child>
               <widget class="Gtk.VBox" id="vboxPages">
                 <property name="MemberName" />
