@@ -3,6 +3,7 @@ using ClosedXML.Excel;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Globalization;
+using System.Linq;
 
 namespace XlsFormat
 {
@@ -25,8 +26,9 @@ namespace XlsFormat
         }
 
         public struct Product  
-        {  
-            //номер у нас будет ключем в словаре
+        {
+			//номер у нас будет ключем в словаре
+			public string number;
             public UInt32 allPlaces; //2. Суммарное количество вложений (количество мест в пакете)
             public UInt32 placesByType; // 3. Количество объектов конкретного типа в посылке
             public string name;
@@ -41,7 +43,9 @@ namespace XlsFormat
         public double weightPackage;//вес упаковки
         public double weightGross;//брутто
 
-        public Dictionary<string, List<Product>> goods = new Dictionary<string, List<Product>>(1000);
+		public IOrderedEnumerable<Product> sortedProducts;
+
+        private Dictionary<string, List<Product>> goods = new Dictionary<string, List<Product>>(1000);
 
         private Regex priceRegex = new Regex(@"^[\,\.\d+]*");
 
@@ -68,6 +72,8 @@ namespace XlsFormat
 
                 loadGoods(workbook.Worksheet(1), columnsMap);//Лист “Товары”
                 loadBags(workbook.Worksheet(2), columnsMap);
+
+				sortedProducts = toLinearList();
             }
             catch(Exception ex){
                 Console.WriteLine(ex);
@@ -193,6 +199,29 @@ namespace XlsFormat
                 throw new ArgumentException("[BatchTableC] Broken price: " + rawPrice);
             }
         }
+
+
+		private IOrderedEnumerable<Product> toLinearList()
+		{
+			var list = new List<Product>();
+
+			foreach (KeyValuePair<string, List<XlsFormat.BatchTableC.Product>> entry in goods)
+			{
+				var key = entry.Key;
+				foreach (XlsFormat.BatchTableC.Product value in entry.Value)
+				{
+					var copy = value;
+					copy.number = key;
+
+					list.Add(copy);
+				}
+			}
+			
+			return (
+				from product in list
+				orderby product.bagNumber
+			    select product
+			);
+		}
     }
 }
-

@@ -145,13 +145,17 @@ namespace XlsFormat
 
         private UInt32 CalcItemsCount(BatchTableC batchTbl){
             UInt32 count = 0;
-            
-			foreach (KeyValuePair<string, List<XlsFormat.BatchTableC.Product>> entry in batchTbl.goods) {
-                var key = entry.Key;
-                foreach (XlsFormat.BatchTableC.Product value in entry.Value) {
-					count += value.placesByType;
-                }
-            }
+
+			//foreach (KeyValuePair<string, List<XlsFormat.BatchTableC.Product>> entry in batchTbl.goods) {
+			//             var key = entry.Key;
+			//             foreach (XlsFormat.BatchTableC.Product value in entry.Value) {
+			//		count += value.placesByType;
+			//             }
+			//         }
+
+			var enumer = batchTbl.sortedProducts.GetEnumerator();
+
+			while (enumer.MoveNext()) ++count;
 
             return count;
         }
@@ -175,30 +179,31 @@ namespace XlsFormat
 
             var codes = codesTbl.codes;
 
-            UInt32 itemsCount = CalcItemsCount (batchTbl);
+			UInt32 itemsCount = CalcItemsCount(batchTbl);
 			double packageWeight = (double)batchTbl.weightPackage / (double)itemsCount;
 
             UInt32 i = 0;
 
-            foreach (KeyValuePair<string, List<XlsFormat.BatchTableC.Product>> entry in batchTbl.goods) {
-                var key = entry.Key;
+			ulong prevBagNumber = 0;
 
-                foreach (XlsFormat.BatchTableC.Product value in entry.Value) {
-                    ++i;
+			foreach (XlsFormat.BatchTableC.Product value in batchTbl.sortedProducts)
+			{
+				++i;
 
-                    ulong code;
+				int place = (prevBagNumber != value.bagNumber ? 1 : 0);
+				prevBagNumber = value.bagNumber;
 
-                    if (!codes.TryGetValue (value.name, out code)) {
-                        code = 0;
-                    }
-
-                    var netWeight = (value.bagWeight / value.allPlaces) * value.placesByType;
-					var grossWeight = netWeight + packageWeight * value.placesByType;
-
-                    //FIXME надр нормально распределить
-                    //             № П/П   Наименование    Маркировка  пломба           КОД ТНВЭД   Кол.             Ед.изм. Мест  УПАКОВКА    БРУТТО           НЕТТО   ЦЕНА         СТОИМОСТЬ
-					table.Rows.Add(i,      value.name,     key,        value.bagNumber, code,       value.placesByType, "шт.",  0,    "мешок",    grossWeight, netWeight,      value.price, value.price * value.placesByType);
+                ulong code;
+                if (!codes.TryGetValue (value.name, out code)) {
+                    code = 0;
                 }
+
+                var netWeight = (value.bagWeight / value.allPlaces) * value.placesByType;
+				var grossWeight = netWeight + packageWeight * value.placesByType;
+
+                //FIXME надр нормально распределить
+                //             № П/П   Наименование    Маркировка  пломба           КОД ТНВЭД   Кол.             Ед.изм. Мест  УПАКОВКА    БРУТТО           НЕТТО   ЦЕНА         СТОИМОСТЬ
+				table.Rows.Add(i,      value.name,     value.number,        value.bagNumber, code,       value.placesByType, "шт.",  place,    "мешок",    grossWeight, netWeight,      value.price, value.price * value.placesByType);
             }
 
             return table;
