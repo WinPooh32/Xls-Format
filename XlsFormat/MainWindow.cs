@@ -25,6 +25,41 @@ public partial class MainWindow : Gtk.Window
 		//Начальные свойства виджетов
 		stackPages.Page = 0;
 		hpaned1.Position = 200;
+
+        ////////
+		generateTittleLists(combTNVEDname);
+		generateTittleLists(combTNVEDcode);
+
+		generateTittleLists(combBagOrderNumber);
+        generateTittleLists(combBagNumber);
+		generateTittleLists(combWeight);
+
+        generateTittleLists(combPartyName);
+		generateTittleLists(combPartyNum);
+		generateTittleLists(combPartyCost);
+		generateTittleLists(combPartyAllCount);
+		generateTittleLists(combPartyCountByType);
+
+		btnNextTNVED.Clicked += OnTNVDNext;
+		btnNextParty.Clicked += OnPartyNext;
+	}
+
+	protected void generateTittleLists(Gtk.ComboBox cb)
+	{
+		ClearCombo(cb);
+
+		for (char c = 'A'; c <= 'Z'; c++)
+		{
+			cb.AppendText(""+c);
+		}
+
+		for (char c = 'A'; c <= 'Z'; c++)
+		{
+			for (char d = 'A'; d <= 'Z'; d++)
+			{
+				cb.AppendText(""+c+d);
+			}
+		}
 	}
 
 	protected void ClearCombo(Gtk.ComboBox cb)
@@ -35,6 +70,36 @@ public partial class MainWindow : Gtk.Window
         cb.AddAttribute(cell, "text", 0);
         ListStore store = new ListStore(typeof(string));
 		cb.Model = store;	}
+
+	protected CodesTableC.ColumnNames makeCodesMap()
+	{
+		return new CodesTableC.ColumnNames
+		{
+			name = combTNVEDname.ActiveText,
+			code = combTNVEDcode.ActiveText
+		};
+	}
+
+	protected BatchTableC.ColumnNames makeBatchMap()
+	{
+		return new BatchTableC.ColumnNames
+		{
+			allPlaces = combPartyAllCount.ActiveText,
+
+			bagNumber = combBagNumber.ActiveText,
+			bagOrderNumber = combBagOrderNumber.ActiveText,
+			bagWeight = combWeight.ActiveText,
+
+			name = combPartyName.ActiveText,
+			number = combPartyNum.ActiveText,
+			placesByType = combPartyCountByType.ActiveText,
+			price = combPartyCost.ActiveText,
+
+			sumGrossWeight = entrySumGross.Text,
+			sumNetWeight = entrySumNetWeight.Text,
+			sumPackagesWeight = entrySumPackageWeight.Text
+		};
+	}
 
 	protected void OnDeleteEvent(object sender, DeleteEventArgs a)
 	{
@@ -48,10 +113,6 @@ public partial class MainWindow : Gtk.Window
 		{
 			stackPages.NextPage();
 		}
-		else
-		{
-			
-		}
 	}
 
 	protected void OnBack(object sender, EventArgs e)
@@ -61,6 +122,34 @@ public partial class MainWindow : Gtk.Window
 			stackPages.PrevPage();
 		}	}
 
+	protected void OnTNVDNext(object sender, EventArgs e)
+	{
+		try
+		{
+			var filePath = ExtractChooserPath(filechooserTNVED);
+			tableCodes = new CodesTableC(filePath, makeCodesMap());
+			Console.WriteLine("OK");
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine(ex);
+		}	}
+
+	protected void OnPartyNext(object sender, EventArgs e)
+	{
+		try
+		{
+			var filePath = ExtractChooserPath(filechooserParty);
+			tableBatch = new XlsFormat.BatchTableC(filePath, makeBatchMap());
+			Console.WriteLine("OK");
+		}
+		catch(Exception ex)
+		{
+			Console.WriteLine(ex);
+		}
+	}
+
+
 	private string ExtractChooserPath(object chooser)
 	{
 		Gtk.FileChooser fileChooser = (Gtk.FileChooser)chooser;
@@ -69,34 +158,16 @@ public partial class MainWindow : Gtk.Window
 
 	protected void onTNVEDselected(object sender, EventArgs e)
 	{
-		try
-		{
-			var filePath = ExtractChooserPath(sender);
-			tableCodes = new XlsFormat.CodesTableC(filePath);
-
-			frameTNVED.Sensitive = true;
-		}
-		catch (Exception ex)
-		{
-			Console.WriteLine(ex);
-		}
+		frameTNVED.Sensitive = true;
 	}
 
 	protected void OnPartySelected(object sender, EventArgs e)
 	{
-		try
-		{
-			var filePath = ExtractChooserPath(sender);
-			tableBatch = new XlsFormat.BatchTableC(filePath);
-
-			framePartyList1.Sensitive = true;
-			framePartyList2.Sensitive = true;
-		}
-		catch(Exception ex)
-		{
-			Console.WriteLine(ex);
-		}
+		framePartyList1.Sensitive = true;
+		framePartyList2.Sensitive = true;
+		framePartyList3.Sensitive = true;
 	}
+
 	protected void OnTransportSelected(object sender, EventArgs e)
 	{
 		try
@@ -147,7 +218,6 @@ public partial class MainWindow : Gtk.Window
 		{
 			Console.WriteLine(ex);
 		}
-
 	}
 
 	protected void OnSave(object sender, EventArgs e)

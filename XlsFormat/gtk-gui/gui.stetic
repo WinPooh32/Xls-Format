@@ -6,9 +6,9 @@
   </configuration>
   <import>
     <widget-library name="glade-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
-    <widget-library name="../bin/Release/XlsFormat.exe" internal="true" />
+    <widget-library name="../bin/Debug/XlsFormat.exe" internal="true" />
   </import>
-  <widget class="Gtk.Window" id="MainWindow" design-size="621 435">
+  <widget class="Gtk.Window" id="MainWindow" design-size="697 551">
     <action-group name="Default" />
     <property name="MemberName" />
     <property name="Title" translatable="yes">Товары</property>
@@ -411,9 +411,8 @@
               <widget class="Gtk.Notebook" id="stackPages">
                 <property name="MemberName" />
                 <property name="CanFocus">True</property>
-                <property name="CurrentPage">0</property>
+                <property name="CurrentPage">1</property>
                 <property name="ShowBorder">False</property>
-                <property name="ShowTabs">False</property>
                 <child>
                   <widget class="Gtk.VBox" id="vboxPageTNVED">
                     <property name="MemberName" />
@@ -486,7 +485,7 @@
                                         <property name="MemberName" />
                                         <property name="WidthRequest">200</property>
                                         <property name="Xalign">0</property>
-                                        <property name="LabelProp" translatable="yes">Номер отправления:</property>
+                                        <property name="LabelProp" translatable="yes">Наименовани отправления:</property>
                                       </widget>
                                       <packing>
                                         <property name="Position">0</property>
@@ -496,7 +495,7 @@
                                       </packing>
                                     </child>
                                     <child>
-                                      <widget class="Gtk.ComboBox" id="combTNVEDnames">
+                                      <widget class="Gtk.ComboBox" id="combTNVEDname">
                                         <property name="MemberName" />
                                         <property name="IsTextCombo">True</property>
                                         <property name="Items" translatable="yes">A
@@ -526,7 +525,7 @@ C</property>
                                         <property name="MemberName" />
                                         <property name="WidthRequest">200</property>
                                         <property name="Xalign">0</property>
-                                        <property name="LabelProp" translatable="yes">Код товара:</property>
+                                        <property name="LabelProp" translatable="yes">Код ТНВЭД:</property>
                                       </widget>
                                       <packing>
                                         <property name="Position">0</property>
@@ -536,7 +535,7 @@ C</property>
                                       </packing>
                                     </child>
                                     <child>
-                                      <widget class="Gtk.ComboBox" id="combTNVEDnames2">
+                                      <widget class="Gtk.ComboBox" id="combTNVEDcode">
                                         <property name="MemberName" />
                                         <property name="IsTextCombo">True</property>
                                         <property name="Items" translatable="yes">A
@@ -885,9 +884,6 @@ E
                                     <property name="Fill">False</property>
                                   </packing>
                                 </child>
-                                <child>
-                                  <placeholder />
-                                </child>
                               </widget>
                             </child>
                           </widget>
@@ -913,6 +909,46 @@ E
                                 <property name="MemberName" />
                                 <property name="Spacing">6</property>
                                 <child>
+                                  <widget class="Gtk.HBox" id="hboxTNVEDname8">
+                                    <property name="MemberName" />
+                                    <property name="Spacing">6</property>
+                                    <child>
+                                      <widget class="Gtk.Label" id="labelTNVEDname8">
+                                        <property name="MemberName" />
+                                        <property name="WidthRequest">200</property>
+                                        <property name="Xalign">0</property>
+                                        <property name="LabelProp" translatable="yes">Номер отправления:</property>
+                                      </widget>
+                                      <packing>
+                                        <property name="Position">0</property>
+                                        <property name="AutoSize">True</property>
+                                        <property name="Expand">False</property>
+                                        <property name="Fill">False</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <widget class="Gtk.ComboBox" id="combBagOrderNumber">
+                                        <property name="MemberName" />
+                                        <property name="IsTextCombo">True</property>
+                                        <property name="Items" translatable="yes">A
+B
+C</property>
+                                        <property name="Active">1</property>
+                                      </widget>
+                                      <packing>
+                                        <property name="Position">1</property>
+                                        <property name="AutoSize">False</property>
+                                      </packing>
+                                    </child>
+                                  </widget>
+                                  <packing>
+                                    <property name="Position">0</property>
+                                    <property name="AutoSize">True</property>
+                                    <property name="Expand">False</property>
+                                    <property name="Fill">False</property>
+                                  </packing>
+                                </child>
+                                <child>
                                   <widget class="Gtk.HBox" id="hboxTNVEDname7">
                                     <property name="MemberName" />
                                     <property name="Spacing">6</property>
@@ -931,53 +967,13 @@ E
                                       </packing>
                                     </child>
                                     <child>
-                                      <widget class="Gtk.ComboBox" id="combTNVEDnames1">
+                                      <widget class="Gtk.ComboBox" id="combBagNumber">
                                         <property name="MemberName" />
                                         <property name="IsTextCombo">True</property>
                                         <property name="Items" translatable="yes">A
 B
 C</property>
                                         <property name="Active">0</property>
-                                      </widget>
-                                      <packing>
-                                        <property name="Position">1</property>
-                                        <property name="AutoSize">False</property>
-                                      </packing>
-                                    </child>
-                                  </widget>
-                                  <packing>
-                                    <property name="Position">0</property>
-                                    <property name="AutoSize">True</property>
-                                    <property name="Expand">False</property>
-                                    <property name="Fill">False</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <widget class="Gtk.HBox" id="hboxTNVEDname8">
-                                    <property name="MemberName" />
-                                    <property name="Spacing">6</property>
-                                    <child>
-                                      <widget class="Gtk.Label" id="labelTNVEDname8">
-                                        <property name="MemberName" />
-                                        <property name="WidthRequest">200</property>
-                                        <property name="Xalign">0</property>
-                                        <property name="LabelProp" translatable="yes">Наименование отправления:</property>
-                                      </widget>
-                                      <packing>
-                                        <property name="Position">0</property>
-                                        <property name="AutoSize">True</property>
-                                        <property name="Expand">False</property>
-                                        <property name="Fill">False</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <widget class="Gtk.ComboBox" id="combTNVEDnames3">
-                                        <property name="MemberName" />
-                                        <property name="IsTextCombo">True</property>
-                                        <property name="Items" translatable="yes">A
-B
-C</property>
-                                        <property name="Active">1</property>
                                       </widget>
                                       <packing>
                                         <property name="Position">1</property>
@@ -1011,7 +1007,7 @@ C</property>
                                       </packing>
                                     </child>
                                     <child>
-                                      <widget class="Gtk.ComboBox" id="combTNVEDnames4">
+                                      <widget class="Gtk.ComboBox" id="combWeight">
                                         <property name="MemberName" />
                                         <property name="IsTextCombo">True</property>
                                         <property name="Items" translatable="yes">A
@@ -1032,9 +1028,6 @@ C</property>
                                     <property name="Fill">False</property>
                                   </packing>
                                 </child>
-                                <child>
-                                  <placeholder />
-                                </child>
                               </widget>
                             </child>
                           </widget>
@@ -1043,6 +1036,146 @@ C</property>
                       <packing>
                         <property name="Position">2</property>
                         <property name="AutoSize">True</property>
+                        <property name="Expand">False</property>
+                        <property name="Fill">False</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="Gtk.Frame" id="framePartyList3">
+                        <property name="MemberName" />
+                        <property name="Sensitive">False</property>
+                        <child>
+                          <widget class="Gtk.Alignment" id="GtkAlignment3">
+                            <property name="MemberName" />
+                            <property name="Xalign">0</property>
+                            <property name="Yalign">0</property>
+                            <property name="BorderWidth">2</property>
+                            <child>
+                              <widget class="Gtk.VBox" id="vbox3">
+                                <property name="MemberName" />
+                                <property name="Spacing">6</property>
+                                <child>
+                                  <widget class="Gtk.HBox" id="hboxTNVEDname18">
+                                    <property name="MemberName" />
+                                    <property name="Spacing">6</property>
+                                    <child>
+                                      <widget class="Gtk.Label" id="labelTNVEDname16">
+                                        <property name="MemberName" />
+                                        <property name="WidthRequest">200</property>
+                                        <property name="Xalign">0</property>
+                                        <property name="LabelProp" translatable="yes">Общий вес брутто:</property>
+                                      </widget>
+                                      <packing>
+                                        <property name="Position">0</property>
+                                        <property name="AutoSize">True</property>
+                                        <property name="Expand">False</property>
+                                        <property name="Fill">False</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <widget class="Gtk.Entry" id="entrySumGross">
+                                        <property name="MemberName" />
+                                        <property name="CanFocus">True</property>
+                                        <property name="IsEditable">True</property>
+                                        <property name="InvisibleChar">●</property>
+                                      </widget>
+                                      <packing>
+                                        <property name="Position">1</property>
+                                        <property name="AutoSize">True</property>
+                                      </packing>
+                                    </child>
+                                  </widget>
+                                  <packing>
+                                    <property name="Position">0</property>
+                                    <property name="AutoSize">True</property>
+                                    <property name="Expand">False</property>
+                                    <property name="Fill">False</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="Gtk.HBox" id="hboxTNVEDname19">
+                                    <property name="MemberName" />
+                                    <property name="Spacing">6</property>
+                                    <child>
+                                      <widget class="Gtk.Label" id="labelTNVEDname17">
+                                        <property name="MemberName" />
+                                        <property name="WidthRequest">200</property>
+                                        <property name="Xalign">0</property>
+                                        <property name="LabelProp" translatable="yes">Общий вес нетто:</property>
+                                      </widget>
+                                      <packing>
+                                        <property name="Position">0</property>
+                                        <property name="AutoSize">True</property>
+                                        <property name="Expand">False</property>
+                                        <property name="Fill">False</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <widget class="Gtk.Entry" id="entrySumNetWeight">
+                                        <property name="MemberName" />
+                                        <property name="CanFocus">True</property>
+                                        <property name="IsEditable">True</property>
+                                        <property name="InvisibleChar">●</property>
+                                      </widget>
+                                      <packing>
+                                        <property name="Position">1</property>
+                                        <property name="AutoSize">True</property>
+                                      </packing>
+                                    </child>
+                                  </widget>
+                                  <packing>
+                                    <property name="Position">1</property>
+                                    <property name="AutoSize">True</property>
+                                    <property name="Expand">False</property>
+                                    <property name="Fill">False</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="Gtk.HBox" id="hboxTNVEDname20">
+                                    <property name="MemberName" />
+                                    <property name="Spacing">6</property>
+                                    <child>
+                                      <widget class="Gtk.Label" id="labelTNVEDname18">
+                                        <property name="MemberName" />
+                                        <property name="WidthRequest">200</property>
+                                        <property name="Xalign">0</property>
+                                        <property name="LabelProp" translatable="yes">Общий вес упаковки:</property>
+                                      </widget>
+                                      <packing>
+                                        <property name="Position">0</property>
+                                        <property name="AutoSize">True</property>
+                                        <property name="Expand">False</property>
+                                        <property name="Fill">False</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <widget class="Gtk.Entry" id="entrySumPackageWeight">
+                                        <property name="MemberName" />
+                                        <property name="CanFocus">True</property>
+                                        <property name="IsEditable">True</property>
+                                        <property name="InvisibleChar">●</property>
+                                      </widget>
+                                      <packing>
+                                        <property name="Position">1</property>
+                                        <property name="AutoSize">True</property>
+                                      </packing>
+                                    </child>
+                                  </widget>
+                                  <packing>
+                                    <property name="Position">2</property>
+                                    <property name="AutoSize">True</property>
+                                    <property name="Expand">False</property>
+                                    <property name="Fill">False</property>
+                                  </packing>
+                                </child>
+                              </widget>
+                            </child>
+                          </widget>
+                        </child>
+                      </widget>
+                      <packing>
+                        <property name="Position">3</property>
+                        <property name="AutoSize">False</property>
                       </packing>
                     </child>
                     <child>
@@ -1050,7 +1183,7 @@ C</property>
                         <property name="MemberName" />
                         <property name="Spacing">6</property>
                         <child>
-                          <widget class="Gtk.Button" id="btnNextTNVED1">
+                          <widget class="Gtk.Button" id="btnNextParty">
                             <property name="MemberName" />
                             <property name="WidthRequest">80</property>
                             <property name="CanFocus">True</property>
@@ -1087,7 +1220,7 @@ C</property>
                         </child>
                       </widget>
                       <packing>
-                        <property name="Position">3</property>
+                        <property name="Position">4</property>
                         <property name="AutoSize">True</property>
                         <property name="Expand">False</property>
                         <property name="Fill">False</property>
@@ -1271,7 +1404,7 @@ C</property>
                         <property name="MemberName" />
                         <property name="Spacing">6</property>
                         <child>
-                          <widget class="Gtk.Button" id="btnGenerate1">
+                          <widget class="Gtk.Button" id="btnNextTransport">
                             <property name="MemberName" />
                             <property name="WidthRequest">80</property>
                             <property name="CanFocus">True</property>

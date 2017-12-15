@@ -8,24 +8,31 @@ namespace XlsFormat
     {
         public Dictionary<string, UInt64> codes = new Dictionary<string, UInt64>(1000);
 
-        public CodesTableC(string file)
+		public struct ColumnNames
+		{
+			public string name;
+			public string code;
+		}
+
+        public CodesTableC(string file, ColumnNames columnsMap)
         {
             try{
                 var workbook = new XLWorkbook(file);
                 var worksheet = workbook.Worksheet(1);
 
-                var enumerA = Common.getCellsEnumerator(worksheet, "A");
-                var enumerB = Common.getCellsEnumerator(worksheet, "B");
+				var enumerName = Common.getCellsEnumerator(worksheet, columnsMap.name);
+				var enumberCode = Common.getCellsEnumerator(worksheet, columnsMap.code);
 
                 //пропускаем заголовки
-                enumerA.MoveNext(); enumerB.MoveNext();
+                enumerName.MoveNext(); enumberCode.MoveNext();
 
-                while(enumerA.MoveNext() && enumerB.MoveNext()){
-                    string key = enumerA.Current.GetValue<string>().Trim();
-                    UInt64 val = Convert.ToUInt64(enumerB.Current.GetValue<string>().Trim());
-
+                while(enumerName.MoveNext() && enumberCode.MoveNext()){
+                    string key = enumerName.Current.GetValue<string>().Trim();
+                   
                     try{
-                        codes.Add(key, val);
+						UInt64 val = Convert.ToUInt64(enumberCode.Current.GetValue<string>().Trim());
+                        
+						codes.Add(key, val);
                     }
                     catch(Exception ex){
                         //игнорируем повторения

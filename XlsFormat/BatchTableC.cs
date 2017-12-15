@@ -45,26 +45,26 @@ namespace XlsFormat
 
         private Regex priceRegex = new Regex(@"^[\,\.\d+]*");
 
-        public BatchTableC (string file)
+        public BatchTableC (string file, ColumnNames columnsMap)
         {
             try{
                 var workbook = new XLWorkbook(file);
 
-                ColumnNames columnsMap = new ColumnNames{
-                    number = "A",
-                    allPlaces = "T",
-                    placesByType ="AG",//FIXME возможно надо поменять местами
-                    name = "AK",
-                    price = "AO",
+     //           ColumnNames columnsMap = new ColumnNames{
+     //               number = "A",
+     //               allPlaces = "T",
+     //               placesByType ="AG",//FIXME возможно надо поменять местами
+     //               name = "AK",
+     //               price = "AO",
 
-                    bagOrderNumber = "A",
-                    bagNumber = "B",
-                    bagWeight = "C",
+     //               bagOrderNumber = "A",
+     //               bagNumber = "B",
+     //               bagWeight = "C",
 
-					sumNetWeight = "E1",
-					sumGrossWeight = "E3",
-					sumPackagesWeight = "E2"
-                };
+					//sumNetWeight = "E1",
+					//sumGrossWeight = "E3",
+					//sumPackagesWeight = "E2"
+     //           };
 
                 loadGoods(workbook.Worksheet(1), columnsMap);//Лист “Товары”
                 loadBags(workbook.Worksheet(2), columnsMap);
