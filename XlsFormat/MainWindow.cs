@@ -42,6 +42,32 @@ public partial class MainWindow : Gtk.Window
 
 		btnNextTNVED.Clicked += OnTNVDNext;
 		btnNextParty.Clicked += OnPartyNext;
+		btnNextTransport.Clicked += OnTransportNext;
+
+	}
+
+	protected void Warning(string message) 
+	{
+		this.Sensitive = false;
+
+		var md = new MessageDialog(this, DialogFlags.Modal | DialogFlags.DestroyWithParent, 
+		                           MessageType.Warning, ButtonsType.Ok, message);
+		md.Run();
+		md.Destroy();
+
+		this.Sensitive = true;
+	}
+
+	protected void fileChooserWarning(string filePath)
+	{
+		if (string.IsNullOrEmpty(filePath))
+			{
+                Warning("Файл не выбран!");
+			}
+			else
+			{
+				Warning("Ошибка в файле: '" + filePath + "'");
+			}
 	}
 
 	protected void generateTittleLists(Gtk.ComboBox cb)
@@ -107,7 +133,7 @@ public partial class MainWindow : Gtk.Window
 		a.RetVal = true;
 	}
 
-	protected void OnNext(object sender, EventArgs e)
+	protected void NextPage(object sender, EventArgs e)
 	{
 		if (stackPages.Page < stackPages.NPages)
 		{
@@ -115,7 +141,7 @@ public partial class MainWindow : Gtk.Window
 		}
 	}
 
-	protected void OnBack(object sender, EventArgs e)
+	protected void PrevPage(object sender, EventArgs e)
 	{
 		if ( stackPages.CurrentPage > 0)
 		{
@@ -124,31 +150,54 @@ public partial class MainWindow : Gtk.Window
 
 	protected void OnTNVDNext(object sender, EventArgs e)
 	{
+		var filePath = ExtractChooserPath(filechooserTNVED);
+
 		try
 		{
-			var filePath = ExtractChooserPath(filechooserTNVED);
 			tableCodes = new CodesTableC(filePath, makeCodesMap());
-			Console.WriteLine("OK");
+
+			NextPage(sender, e);
 		}
 		catch (Exception ex)
 		{
 			Console.WriteLine(ex);
+			fileChooserWarning(filePath);
 		}	}
 
 	protected void OnPartyNext(object sender, EventArgs e)
 	{
+		var filePath = ExtractChooserPath(filechooserParty);
+
 		try
 		{
-			var filePath = ExtractChooserPath(filechooserParty);
-			tableBatch = new XlsFormat.BatchTableC(filePath, makeBatchMap());
-			Console.WriteLine("OK");
+			tableBatch = new XlsFormat.BatchTableC();
+			var error = tableBatch.Load(filePath, makeBatchMap());
+
+			if (!string.IsNullOrEmpty(error))
+			{
+				Common.Log(error);
+				Warning(error);
+			}
+			else
+			{
+                NextPage(sender, e);
+			}            
 		}
 		catch(Exception ex)
 		{
 			Console.WriteLine(ex);
+            fileChooserWarning(filePath);
 		}
 	}
 
+	protected void OnTransportNext(object sender, EventArgs e)
+	{
+		NextPage(sender, e);
+	}
+
+	protected void OnTemplateNext(object sender, EventArgs e)
+	{
+		NextPage(sender, e);	}
 
 	private string ExtractChooserPath(object chooser)
 	{
@@ -170,9 +219,10 @@ public partial class MainWindow : Gtk.Window
 
 	protected void OnTransportSelected(object sender, EventArgs e)
 	{
+		var filePath = ExtractChooserPath(sender);
+
 		try
 		{
-			var filePath = ExtractChooserPath(sender);
 			tableCars = new XlsFormat.CarsTableC(filePath);
 
 			ClearCombo(combDriver);
@@ -191,7 +241,15 @@ public partial class MainWindow : Gtk.Window
 		}
 		catch(Exception ex)
 		{
-			Console.WriteLine(ex);;
+			Console.WriteLine(ex);
+			if (string.IsNullOrEmpty(filePath))
+			{
+                Warning("Файл транспортной БД не выбран!");
+			}
+			else
+			{
+                Warning("Ошибка в файле транспортной БД:\r\n'" + filePath + "'");
+			}
 		}
 	}
 
@@ -201,22 +259,28 @@ public partial class MainWindow : Gtk.Window
 		{
 			var generatorPacking = new PackingGeneratorC(pathTemplatePackingList);
 
-			var savePath = path + "\\Упаковочный лист.xlsx";
-
 			var carIdx = combCar.Active;
 			var driverIdx = combDriver.Active;
 
-			generatorPacking.generatePackingList(
-					savePath, 
+			var retCode = generatorPacking.generatePackingList(
+					path, 
 			        tableBatch, tableCodes, 
 					tableCars.cars[carIdx],
 					tableCars.drivers[driverIdx],
 			        "NOMER@12738"
 			);
+
+			if (retCode == 1)
+			{
+				Warning("");
+			}
+
+            Warning("Файлы успешно сохранены!");
 		}
 		catch (Exception ex)
 		{
 			Console.WriteLine(ex);
+            Warning("Не удалось сохранить файлы!");
 		}
 	}
 
@@ -231,11 +295,10 @@ public partial class MainWindow : Gtk.Window
 
 	    if (filechooser.Run() == (int)ResponseType.Accept) 
 	    {
-	            SavePackingList(filechooser.Filename);
+			SavePackingList(filechooser.Filename);
 	    }
 
-	    filechooser.Destroy();
-	       
+		filechooser.Destroy();
 	}
 
 	protected void OnPackSaveAs(object sender, AddedArgs args)

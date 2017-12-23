@@ -49,37 +49,33 @@ namespace XlsFormat
 
         private Regex priceRegex = new Regex(@"^[\,\.\d+]*");
 
-        public BatchTableC (string file, ColumnNames columnsMap)
+        public BatchTableC ()
         {
+
+        }
+
+		public string Load(string file, ColumnNames columnsMap)
+		{
             try{
                 var workbook = new XLWorkbook(file);
 
-     //           ColumnNames columnsMap = new ColumnNames{
-     //               number = "A",
-     //               allPlaces = "T",
-     //               placesByType ="AG",//FIXME возможно надо поменять местами
-     //               name = "AK",
-     //               price = "AO",
+				loadGoods(workbook.Worksheet(1), columnsMap);//Лист “Товары”
+				var error = loadBags(workbook.Worksheet(2), columnsMap);
 
-     //               bagOrderNumber = "A",
-     //               bagNumber = "B",
-     //               bagWeight = "C",
-
-					//sumNetWeight = "E1",
-					//sumGrossWeight = "E3",
-					//sumPackagesWeight = "E2"
-     //           };
-
-                loadGoods(workbook.Worksheet(1), columnsMap);//Лист “Товары”
-                loadBags(workbook.Worksheet(2), columnsMap);
+				if (!string.IsNullOrEmpty(error))
+				{
+					return error;
+				}
 
 				sortedProducts = toLinearList();
             }
             catch(Exception ex){
-                Console.WriteLine(ex);
+				Common.Log(ex.ToString());
                 throw new ArgumentException("[BatchTableC] Error in file: " + file);
             }
-        }
+
+			return null;
+		}
 
         private void loadGoods(IXLWorksheet worksheet, ColumnNames columnsMap){
             var enumerNumberColumn          = Common.getCellsEnumerator (worksheet, columnsMap.number);
@@ -128,16 +124,13 @@ namespace XlsFormat
                     values.Add(val);
                 }
                 catch(Exception ex){
-                    //игнорируем повторения ключа
-                    //TODO уведомление
-
-                    Console.WriteLine ("WOW:" + i);
                     Console.WriteLine (ex);
+					Common.Log(ex.ToString());
                 }
             }
         }
 
-        private void loadBags(IXLWorksheet worksheet, ColumnNames columnsMap){
+        private string loadBags(IXLWorksheet worksheet, ColumnNames columnsMap){
 
 			//считываем суммы
 			weightNet = Convert.ToDouble(worksheet.Cell(columnsMap.sumNetWeight).GetString().Trim());
@@ -156,6 +149,8 @@ namespace XlsFormat
 
             int i = 0;
 
+			double testSum = 0;
+
             while (
                 bagOrderNumberColumn.MoveNext()  &&
                 enumerBagNumberColumn.MoveNext() &&
@@ -164,11 +159,16 @@ namespace XlsFormat
                 ++i;
 
                 try{
-                    var key = bagOrderNumberColumn.Current.GetValue<string>().Trim();
-                    var bagNumber = Convert.ToUInt64(enumerBagNumberColumn.Current.GetString().Trim());
-                    var bagWeight = Convert.ToDouble(enumerBagWeightColumn.Current.GetString().Trim());
+                    string key = bagOrderNumberColumn.Current.GetValue<string>().Trim();
+					UInt64 bagNumber = Convert.ToUInt64(enumerBagNumberColumn.Current.GetString().Trim());
+					double bagWeight = Convert.ToDouble(normalizeFloat(enumerBagWeightColumn.Current.GetString().Trim()));
 
                     var list = goods[key];
+
+					uint sumPlaces = 0;
+					uint bagPlaces = 0;
+
+					testSum += bagWeight;
 
                     for(int k = 0; k < list.Count; ++k){
                         var value = list[k];
@@ -176,14 +176,28 @@ namespace XlsFormat
                         value.bagNumber = bagNumber;
                         value.bagWeight = bagWeight;
 
+						bagPlaces = value.allPlaces;
+
+						sumPlaces += value.placesByType;
+
                         list[k] = value;
                     }
+
+					if (sumPlaces > bagPlaces)
+					{
+						//error
+						return "Заказ с номером " + key + " cодержит " + sumPlaces + " вещей из " + bagPlaces + " возможных.";
+					}
                 }
                 catch(Exception ex){
-                    Console.WriteLine (i);
                     Console.WriteLine (ex);
+					Common.Log(ex.ToString());
                 }
             }
+
+			Common.Log("Сумма мешков нетто: " + testSum);
+
+			return null;
         }
 
         private string normalizePrice(string rawPrice){
@@ -200,6 +214,10 @@ namespace XlsFormat
             }
         }
 
+		private string normalizeFloat(string rawFloat)
+		{
+			return rawFloat.Replace('.', ',');
+		}
 
 		private IOrderedEnumerable<Product> toLinearList()
 		{

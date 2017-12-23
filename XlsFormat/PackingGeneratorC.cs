@@ -47,7 +47,7 @@ namespace XlsFormat
         private TemplateMap templateMap = new TemplateMap {
             cellDateShortFirst  = "A1",
             cellDateShortSecond = "D8",
-            cellDateFull        = "J12",
+            cellDateFull        = "J13",
 
             cellNumberFirst     = "A1",
             cellNumberSecond    = "D8", 
@@ -89,8 +89,8 @@ namespace XlsFormat
             }
         }
 
-        public void generatePackingList(
-            string outFile, 
+        public int generatePackingList(
+			string savePath, 
             BatchTableC batchTbl, 
             CodesTableC codesTbl, 
             Car car,
@@ -121,52 +121,54 @@ namespace XlsFormat
             Common.setCellString(ws, templateMap.cellDriverPassport,    driver.passport);
 
 
-            //копируем футер в другое место и удаляем со старого места
-            var footerCopy = ws.Range("A10:M16");
+			//копируем футер в другое место и удаляем со старого места
+			const string FOOTER_RANGE = "A10:M16";
+            var footerCopy = ws.Range(FOOTER_RANGE);
 
-            ws.Cell (1, 16).Value = footerCopy;
-            ws.Range("A10:M16").Delete(XLShiftDeletedCells.ShiftCellsUp);
+            ws.Cell (1, 16).Value = footerCopy; //в незанятое место
+			footerCopy.Clear(XLClearOptions.ContentsAndFormats);
             //------
             //вставляем таблицу со значениями
-            var insertTable = GetTable (batchTbl, codesTbl);
-            ws.Cell(9, 1).InsertTable(insertTable);
+			var insertTable = GetTable (batchTbl, codesTbl, savePath);
 
-            //копируем футер на новое место с последующим удалением со старого
-            footerCopy = ws.Range("P1:AB7");
-            ws.Cell(insertTable.Rows.Count + 10, 1).Value = footerCopy;
-            ws.Range("P1:AB7").Delete(XLShiftDeletedCells.ShiftCellsUp);
+			if (insertTable != null)
+			{
+				ws.Cell(9, 1).InsertTable(insertTable);
+			}
+			else
+			{
+				return 1;
+			}
 
+			//копируем футер на новое место с последующим удалением со старого
+			const string TMP_RANGE = "P1:AB7";
+            footerCopy = ws.Range(TMP_RANGE);
+			ws.Cell(insertTable.Rows.Count + 9 + 1, 1).Value = footerCopy;
+            ws.Range(TMP_RANGE).Clear(XLClearOptions.ContentsAndFormats);
 
-            ws.Cells ("A9:M9").Clear (XLClearOptions.Formats);
+			//ws.Cells ("A9:M9").Clear (XLClearOptions.Formats);
 
-            workbook.SaveAs(outFile);
+			Common.Log("Сохранение файлов в '" + savePath + "'");
+			workbook.SaveAs(savePath + "\\" + Common.fileParty);
+
+			return 0;
         }
 
 
         private UInt32 CalcItemsCount(BatchTableC batchTbl){
             UInt32 count = 0;
-
-			//foreach (KeyValuePair<string, List<XlsFormat.BatchTableC.Product>> entry in batchTbl.goods) {
-			//             var key = entry.Key;
-			//             foreach (XlsFormat.BatchTableC.Product value in entry.Value) {
-			//		count += value.placesByType;
-			//             }
-			//         }
-
 			var enumer = batchTbl.sortedProducts.GetEnumerator();
-
 			while (enumer.MoveNext()) ++count;
-
             return count;
         }
 
-        private DataTable GetTable(BatchTableC batchTbl, CodesTableC codesTbl){
+        private DataTable GetTable(BatchTableC batchTbl, CodesTableC codesTbl, string savePath){
             DataTable table = new DataTable();
 
             table.Columns.Add("№ П/П", typeof(UInt64));
             table.Columns.Add("Наименование", typeof(string));
             table.Columns.Add("Маркировка", typeof(string));
-            table.Columns.Add("пломба", typeof(UInt64));
+            table.Columns.Add("Пломба", typeof(UInt64));
             table.Columns.Add("КОД ТНВЭД", typeof(UInt64));
             table.Columns.Add("Кол.", typeof(UInt32));
             table.Columns.Add("Ед.изм.", typeof(string));
@@ -175,9 +177,10 @@ namespace XlsFormat
             table.Columns.Add("БРУТТО", typeof(double));
             table.Columns.Add("НЕТТО", typeof(double));
             table.Columns.Add("ЦЕНА", typeof(double));
-            table.Columns.Add("СТОИМОСТЬ", typeof(double));
+			table.Columns.Add("СТОИМОСТЬ", typeof(double));
 
             var codes = codesTbl.codes;
+			var notfoundNames = new HashSet<string>();
 
 			UInt32 itemsCount = CalcItemsCount(batchTbl);
 			double packageWeight = (double)batchTbl.weightPackage / (double)itemsCount;
@@ -185,6 +188,9 @@ namespace XlsFormat
             UInt32 i = 0;
 
 			ulong prevBagNumber = 0;
+
+			double testTotalGross = 0;
+			double testTotalNet = 0;
 
 			foreach (XlsFormat.BatchTableC.Product value in batchTbl.sortedProducts)
 			{
@@ -196,15 +202,28 @@ namespace XlsFormat
                 ulong code;
                 if (!codes.TryGetValue (value.name, out code)) {
                     code = 0;
+					notfoundNames.Add(value.name);
                 }
 
-                var netWeight = (value.bagWeight / value.allPlaces) * value.placesByType;
-				var grossWeight = netWeight + packageWeight * value.placesByType;
+				var netWeight = (value.bagWeight / (double)value.allPlaces) * (double)value.placesByType;
 
-                //FIXME надр нормально распределить
+				var grossWeight = netWeight + packageWeight; //* (double)value.placesByType
+
+				testTotalNet += netWeight;
+				testTotalGross += grossWeight;
+
                 //             № П/П   Наименование    Маркировка  пломба           КОД ТНВЭД   Кол.             Ед.изм. Мест  УПАКОВКА    БРУТТО           НЕТТО   ЦЕНА         СТОИМОСТЬ
 				table.Rows.Add(i,      value.name,     value.number,        value.bagNumber, code,       value.placesByType, "шт.",  place,    "мешок",    grossWeight, netWeight,      value.price, value.price * value.placesByType);
             }
+
+			if (notfoundNames.Count != 0)
+			{
+				Common.Log("Добавляем ненайденные коды ТН ВЭД");
+				codesTbl.AppendNotFoundNames(notfoundNames);
+				return null;
+			}
+
+			Common.Log(testTotalNet + " " + testTotalGross + " " + (testTotalGross - testTotalNet));
 
             return table;
         }

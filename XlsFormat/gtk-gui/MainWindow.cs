@@ -572,7 +572,7 @@ public partial class MainWindow
 		this.stackPages = new global::Gtk.Notebook();
 		this.stackPages.CanFocus = true;
 		this.stackPages.Name = "stackPages";
-		this.stackPages.CurrentPage = 1;
+		this.stackPages.CurrentPage = 0;
 		this.stackPages.ShowBorder = false;
 		// Container child stackPages.Gtk.Notebook+NotebookChild
 		this.vboxPageTNVED = new global::Gtk.VBox();
@@ -1432,26 +1432,23 @@ public partial class MainWindow
 		w124.Shrink = false;
 		this.vbox7.Add(this.hpaned1);
 		global::Gtk.Box.BoxChild w125 = ((global::Gtk.Box.BoxChild)(this.vbox7[this.hpaned1]));
-		w125.Position = 1;
+		w125.Position = 0;
 		this.Add(this.vbox7);
 		if ((this.Child != null))
 		{
 			this.Child.ShowAll();
 		}
-		this.DefaultWidth = 697;
-		this.DefaultHeight = 551;
+		this.DefaultWidth = 707;
+		this.DefaultHeight = 525;
 		this.Show();
 		this.DeleteEvent += new global::Gtk.DeleteEventHandler(this.OnDeleteEvent);
 		this.filechooserTNVED.SelectionChanged += new global::System.EventHandler(this.onTNVEDselected);
-		this.btnNextTNVED.Clicked += new global::System.EventHandler(this.OnNext);
 		this.filechooserParty.SelectionChanged += new global::System.EventHandler(this.OnPartySelected);
-		this.button5.Clicked += new global::System.EventHandler(this.OnBack);
-		this.btnNextParty.Clicked += new global::System.EventHandler(this.OnNext);
+		this.button5.Clicked += new global::System.EventHandler(this.PrevPage);
 		this.filechooserTransport.SelectionChanged += new global::System.EventHandler(this.OnTransportSelected);
-		this.button7.Clicked += new global::System.EventHandler(this.OnBack);
-		this.btnNextTransport.Clicked += new global::System.EventHandler(this.OnNext);
+		this.button7.Clicked += new global::System.EventHandler(this.PrevPage);
 		this.filechooserTemplatePackingList.SelectionChanged += new global::System.EventHandler(this.OnTemplatePackingSelected);
-		this.button6.Clicked += new global::System.EventHandler(this.OnBack);
+		this.button6.Clicked += new global::System.EventHandler(this.PrevPage);
 		this.btnGenerate.Clicked += new global::System.EventHandler(this.OnSave);
 	}
 }
