@@ -67,6 +67,13 @@ namespace XlsFormat
 			workbook.Save();
 		}
 
+		public void ForceCleanup()
+		{
+			worksheet = null;
+			workbook = null;
+			GC.WaitForFullGCComplete();
+		}
+
 		private int calcUsedRows()
 		{
 			var enumer = worksheet.RowsUsed(false).GetEnumerator();

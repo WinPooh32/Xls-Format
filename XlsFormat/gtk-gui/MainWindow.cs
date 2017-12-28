@@ -574,6 +574,7 @@ public partial class MainWindow
 		this.stackPages.Name = "stackPages";
 		this.stackPages.CurrentPage = 0;
 		this.stackPages.ShowBorder = false;
+		this.stackPages.ShowTabs = false;
 		// Container child stackPages.Gtk.Notebook+NotebookChild
 		this.vboxPageTNVED = new global::Gtk.VBox();
 		this.vboxPageTNVED.Name = "vboxPageTNVED";

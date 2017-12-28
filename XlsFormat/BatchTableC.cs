@@ -56,8 +56,9 @@ namespace XlsFormat
 
 		public string Load(string file, ColumnNames columnsMap)
 		{
-            try{
-                var workbook = new XLWorkbook(file);
+			try
+			{
+				var workbook = new XLWorkbook(file);
 
 				loadGoods(workbook.Worksheet(1), columnsMap);//Лист “Товары”
 				var error = loadBags(workbook.Worksheet(2), columnsMap);
@@ -68,8 +69,12 @@ namespace XlsFormat
 				}
 
 				sortedProducts = toLinearList();
-            }
-            catch(Exception ex){
+			}
+			catch (KeyNotFoundException knfe)
+			{
+				throw knfe;
+			}
+			catch (Exception ex){
 				Common.Log(ex.ToString());
                 throw new ArgumentException("[BatchTableC] Error in file: " + file);
             }
@@ -106,7 +111,8 @@ namespace XlsFormat
                 ++i;
 
                 try{
-                    key = enumerNumberColumn.Current.GetValue<string>().Trim();
+					key = enumerNumberColumn.Current.GetValue<string>().Trim().ToLower();
+
                     val = new Product { 
                         allPlaces       = Convert.ToUInt32(enumerAllPlacesColumn.Current.GetValue<string>().Trim()),
                         placesByType    = Convert.ToUInt32(enumerPlacesByTypeColumn.Current.GetValue<string>().Trim()),
@@ -158,38 +164,50 @@ namespace XlsFormat
             ) {
                 ++i;
 
-                try{
-                    string key = bagOrderNumberColumn.Current.GetValue<string>().Trim();
+				try
+				{
+					string key = bagOrderNumberColumn.Current.GetValue<string>().Trim().ToLower();
 					UInt64 bagNumber = Convert.ToUInt64(enumerBagNumberColumn.Current.GetString().Trim());
 					double bagWeight = Convert.ToDouble(normalizeFloat(enumerBagWeightColumn.Current.GetString().Trim()));
 
-                    var list = goods[key];
+					List<Product> list;
+
+					if (!goods.TryGetValue(key, out list))
+					{
+						throw new KeyNotFoundException(key);
+					}
 
 					uint sumPlaces = 0;
 					uint bagPlaces = 0;
 
 					testSum += bagWeight;
 
-                    for(int k = 0; k < list.Count; ++k){
-                        var value = list[k];
+					for (int k = 0; k < list.Count; ++k)
+					{
+						var value = list[k];
 
-                        value.bagNumber = bagNumber;
-                        value.bagWeight = bagWeight;
+						value.bagNumber = bagNumber;
+						value.bagWeight = bagWeight;
 
 						bagPlaces = value.allPlaces;
 
 						sumPlaces += value.placesByType;
 
-                        list[k] = value;
-                    }
+						list[k] = value;
+					}
 
 					if (sumPlaces > bagPlaces)
 					{
 						//error
 						return "Заказ с номером " + key + " cодержит " + sumPlaces + " вещей из " + bagPlaces + " возможных.";
 					}
-                }
-                catch(Exception ex){
+				}
+				catch (KeyNotFoundException knfe)
+				{
+					Common.Log("Мешок с номером '" + knfe.Message + "' не найден");
+					throw knfe;
+				}
+				catch (Exception ex){
                     Console.WriteLine (ex);
 					Common.Log(ex.ToString());
                 }

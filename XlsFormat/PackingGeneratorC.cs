@@ -47,7 +47,7 @@ namespace XlsFormat
         private TemplateMap templateMap = new TemplateMap {
             cellDateShortFirst  = "A1",
             cellDateShortSecond = "D8",
-            cellDateFull        = "J13",
+            cellDateFull        = "J12",
 
             cellNumberFirst     = "A1",
             cellNumberSecond    = "D8", 
@@ -140,13 +140,17 @@ namespace XlsFormat
 				return 1;
 			}
 
+			int lastItemPos = insertTable.Rows.Count + 9;
+
 			//копируем футер на новое место с последующим удалением со старого
 			const string TMP_RANGE = "P1:AB7";
             footerCopy = ws.Range(TMP_RANGE);
-			ws.Cell(insertTable.Rows.Count + 9 + 1, 1).Value = footerCopy;
+			ws.Cell(lastItemPos + 1, 1).Value = footerCopy;
             ws.Range(TMP_RANGE).Clear(XLClearOptions.ContentsAndFormats);
 
 			//ws.Cells ("A9:M9").Clear (XLClearOptions.Formats);
+
+			ws.Range("J10:K" + lastItemPos + 1).Style.NumberFormat.Format = "0.000";
 
 			Common.Log("Сохранение файлов в '" + savePath + "'");
 			workbook.SaveAs(savePath + "\\" + Common.fileParty);

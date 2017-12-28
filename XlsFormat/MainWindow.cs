@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Gtk;
 using XlsFormat;
 
@@ -180,8 +181,12 @@ public partial class MainWindow : Gtk.Window
 			}
 			else
 			{
-                NextPage(sender, e);
-			}            
+				NextPage(sender, e);
+			}
+		}
+		catch (KeyNotFoundException knfe)
+		{
+			Warning("Мешок с номером '" + knfe.Message + "' не найден в таблице товаров.");
 		}
 		catch(Exception ex)
 		{
@@ -262,6 +267,15 @@ public partial class MainWindow : Gtk.Window
 			var carIdx = combCar.Active;
 			var driverIdx = combDriver.Active;
 
+			//Загружаем коды
+			var filePath = ExtractChooserPath(filechooserTNVED);
+
+			tableCodes.ForceCleanup();
+			tableCodes = null;
+			GC.WaitForFullGCComplete();
+
+			tableCodes = new CodesTableC(filePath, makeCodesMap());
+
 			var retCode = generatorPacking.generatePackingList(
 					path, 
 			        tableBatch, tableCodes, 
@@ -272,10 +286,12 @@ public partial class MainWindow : Gtk.Window
 
 			if (retCode == 1)
 			{
-				Warning("");
+				Warning("В БД кодов ТНВЭД были добавлены недостающие наименования. Пожалуйста, заполните значения и попытайтесь снова сохранить результат.");
 			}
-
-            Warning("Файлы успешно сохранены!");
+			else
+			{
+                 Warning("Файлы успешно сохранены!");
+			}
 		}
 		catch (Exception ex)
 		{
@@ -291,14 +307,17 @@ public partial class MainWindow : Gtk.Window
 		this,
         FileChooserAction.SelectFolder,
 		"Омена", ResponseType.Cancel,
-		"Открыть", ResponseType.Accept);
+		"Сохранить", ResponseType.Accept);
 
-	    if (filechooser.Run() == (int)ResponseType.Accept) 
-	    {
+		if (filechooser.Run() == (int)ResponseType.Accept)
+		{
 			SavePackingList(filechooser.Filename);
-	    }
-
-		filechooser.Destroy();
+			filechooser.Destroy();
+		}
+		else
+		{
+			filechooser.Destroy();
+		}
 	}
 
 	protected void OnPackSaveAs(object sender, AddedArgs args)
