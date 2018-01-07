@@ -54,6 +54,26 @@ namespace XlsFormat
 			}
 		}
 
+		public Dictionary<UInt64, string> GetGroupedByCode(HashSet<UInt64> excludeCodes)
+		{
+			var grouped = new Dictionary<UInt64, string>(100);
+
+			foreach(KeyValuePair<string, UInt64> entry in codes)
+			{
+				//игнорируем коды из набора исключений
+				if (excludeCodes == null || excludeCodes.Count == 0 || !excludeCodes.Contains(entry.Value))
+				{
+					string itemName;
+					//добавляем код в выходной словарь, если его там еще нет
+					if (!grouped.TryGetValue(entry.Value, out itemName)){
+						grouped.Add(entry.Value, entry.Key);
+					}
+				}
+			}
+
+			return grouped;
+		}
+
 		public void AppendNotFoundNames(HashSet<string> names)
 		{
 			var insertFrom = calcUsedRows();

@@ -6,6 +6,8 @@ namespace XlsFormat
 {
     public struct Car {
         public string name;
+		public string number;
+		public string numberShort;
         public string docs;
         public string vin;
     }
@@ -52,15 +54,19 @@ namespace XlsFormat
 
         private void loadCars(IXLWorksheet worksheet){
             var enumerCar = Common.getCellsEnumerator(worksheet, "D");
-            var enumerDocs = Common.getCellsEnumerator(worksheet, "E");
-            var enumerVin = Common.getCellsEnumerator(worksheet, "F");
+			var enumerNumber = Common.getCellsEnumerator(worksheet, "E");
+            var enumerDocs = Common.getCellsEnumerator(worksheet, "F");
+            var enumerVin = Common.getCellsEnumerator(worksheet, "G");
 
             //пропускаем заголовки
-            enumerCar.MoveNext(); enumerDocs.MoveNext(); enumerVin.MoveNext();
+			enumerCar.MoveNext(); enumerNumber.MoveNext(); enumerDocs.MoveNext(); enumerVin.MoveNext();
 
-            while (enumerCar.MoveNext() && enumerDocs.MoveNext() && enumerVin.MoveNext()) {
-                cars.Add (new Car{
-                    name = enumerCar.Current.GetString(),
+            while (enumerCar.MoveNext() && enumerNumber.MoveNext() && enumerDocs.MoveNext() && enumerVin.MoveNext()) {
+				cars.Add(new Car
+				{
+					name = enumerCar.Current.GetString(),
+					number = enumerNumber.Current.GetString(),
+					numberShort = enumerNumber.Current.GetString().Substring(1, 3),
                     docs = enumerDocs.Current.GetString(),
                     vin = enumerVin.Current.GetString()
                 });

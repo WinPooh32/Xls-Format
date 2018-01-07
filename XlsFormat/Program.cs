@@ -9,6 +9,8 @@ namespace XlsFormat
 	class Common{
 
 		public const string fileParty = "Упаковочный лист.xlsx";
+		public const string fileSpecification = "Спецификация.xlsx";
+		public const string fileCMR = "СМР.xlsx";
 		public const string fileNotFoundCodes = "Коды ТН ВЭД.xlsx";
 
 		const string logsPath = "Logs";

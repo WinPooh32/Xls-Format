@@ -8,7 +8,7 @@ public partial class MainWindow : Gtk.Window
 	private CodesTableC tableCodes;
 	private BatchTableC tableBatch;
 	private CarsTableC tableCars;
-	private string pathTemplatePackingList;
+	//private string pathTemplatePackingList;
 
 	public MainWindow() : base(Gtk.WindowType.Toplevel)
 	{
@@ -25,7 +25,7 @@ public partial class MainWindow : Gtk.Window
 
 		//Начальные свойства виджетов
 		stackPages.Page = 0;
-		hpaned1.Position = 200;
+		//hpaned1.Position = 200;
 
         ////////
 		generateTittleLists(combTNVEDname);
@@ -73,7 +73,11 @@ public partial class MainWindow : Gtk.Window
 
 	protected void generateTittleLists(Gtk.ComboBox cb)
 	{
+		string defaultVal = cb.ActiveText;
+
 		ClearCombo(cb);
+
+		cb.AppendText(defaultVal);
 
 		for (char c = 'A'; c <= 'Z'; c++)
 		{
@@ -87,6 +91,8 @@ public partial class MainWindow : Gtk.Window
 				cb.AppendText(""+c+d);
 			}
 		}
+
+		cb.Active = 0;
 	}
 
 	protected void ClearCombo(Gtk.ComboBox cb)
@@ -262,7 +268,7 @@ public partial class MainWindow : Gtk.Window
 	{
 		try
 		{
-			var generatorPacking = new PackingGeneratorC(pathTemplatePackingList);
+			var generatorPacking = new PackingGeneratorC();
 
 			var carIdx = combCar.Active;
 			var driverIdx = combDriver.Active;
@@ -270,18 +276,25 @@ public partial class MainWindow : Gtk.Window
 			//Загружаем коды
 			var filePath = ExtractChooserPath(filechooserTNVED);
 
+			//Принудительно выгружаем коды из памяти===============
 			tableCodes.ForceCleanup();
 			tableCodes = null;
 			GC.WaitForFullGCComplete();
 
 			tableCodes = new CodesTableC(filePath, makeCodesMap());
+			//=====================================================
+
+			var driver = tableCars.drivers[driverIdx];
+			var car = tableCars.cars[carIdx];
 
 			var retCode = generatorPacking.generatePackingList(
+				    ExtractChooserPath(filechooserTemplatePackingList),
 					path, 
-			        tableBatch, tableCodes, 
-					tableCars.cars[carIdx],
-					tableCars.drivers[driverIdx],
-			        "NOMER@12738"
+			        tableBatch, 
+				    tableCodes, 
+					car,
+					driver,
+					entryPartyNumber.Text
 			);
 
 			if (retCode == 1)
@@ -290,7 +303,24 @@ public partial class MainWindow : Gtk.Window
 			}
 			else
 			{
-                 Warning("Файлы успешно сохранены!");
+				generatorPacking.GenerateSpecification(ExtractChooserPath(filechooserTemplateSpecification), 
+				                                       path, 
+				                                       tableBatch, 
+				                                       tableCodes, 
+				                                       car, 
+				                                       driver,
+				                                       entryPartyNumber.Text);
+
+				generatorPacking.GenerateCMR(ExtractChooserPath(filechooserTemplateCPM),
+													   path,
+													   tableBatch,
+													   tableCodes,
+													   car,
+													   driver,
+													   entryPartyNumber.Text,
+				                             		   entrySenderCity.Text);
+					
+                Warning("Файлы успешно сохранены!");
 			}
 		}
 		catch (Exception ex)
@@ -325,8 +355,8 @@ public partial class MainWindow : Gtk.Window
 		var folderPath = ExtractChooserPath(sender);
 	}
 
-	private void OnTemplatePackingSelected(object sender, EventArgs e)
-	{
-		pathTemplatePackingList = ExtractChooserPath(sender);
-	}
+	//private void OnTemplatePackingSelected(object sender, EventArgs e)
+	//{
+	//	pathTemplatePackingList = ExtractChooserPath(sender);
+	//}
 }

@@ -259,5 +259,31 @@ namespace XlsFormat
 			    select product
 			);
 		}
+
+		public Dictionary<UInt64, List<Product>> GetGroupedByCode(Dictionary<string, UInt64> codes)
+		{
+			var grouped = new Dictionary<UInt64, List<Product>>(1000);
+
+			foreach (Product item in sortedProducts)
+			{
+				UInt64 code;
+				if (!codes.TryGetValue(item.name, out code))
+				{
+					Common.Log("Не найден код для '" + item.name + "'");
+					continue;
+				}
+
+				List<Product> products;
+				if (!grouped.TryGetValue(code, out products))
+				{
+					products = new List<Product>();
+					grouped.Add(code, products);
+				}
+
+				products.Add(item);
+			}
+
+			return grouped;
+		}
     }
 }
