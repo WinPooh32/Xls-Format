@@ -203,6 +203,16 @@ public partial class MainWindow
 
 	private global::Gtk.FileChooserButton filechooserTemplateCPM;
 
+	private global::Gtk.HSeparator hseparator1;
+
+	private global::Gtk.HBox hboxCPMTemplate3;
+
+	private global::Gtk.Alignment alignment10;
+
+	private global::Gtk.Label label17;
+
+	private global::Gtk.FileChooserButton filechooserIgnoreCodes;
+
 	private global::Gtk.HBox hboxCPMTemplate2;
 
 	private global::Gtk.Alignment alignment9;
@@ -299,7 +309,7 @@ public partial class MainWindow
 		this.labelTNVEDname.WidthRequest = 200;
 		this.labelTNVEDname.Name = "labelTNVEDname";
 		this.labelTNVEDname.Xalign = 0F;
-		this.labelTNVEDname.LabelProp = global::Mono.Unix.Catalog.GetString("Наименовани отправления:");
+		this.labelTNVEDname.LabelProp = global::Mono.Unix.Catalog.GetString("Наименование отправления:");
 		this.hboxTNVEDname.Add(this.labelTNVEDname);
 		global::Gtk.Box.BoxChild w5 = ((global::Gtk.Box.BoxChild)(this.hboxTNVEDname[this.labelTNVEDname]));
 		w5.Position = 0;
@@ -1111,6 +1121,45 @@ public partial class MainWindow
 		w95.Expand = false;
 		w95.Fill = false;
 		// Container child vboxPageTemplates.Gtk.Box+BoxChild
+		this.hseparator1 = new global::Gtk.HSeparator();
+		this.hseparator1.Name = "hseparator1";
+		this.vboxPageTemplates.Add(this.hseparator1);
+		global::Gtk.Box.BoxChild w96 = ((global::Gtk.Box.BoxChild)(this.vboxPageTemplates[this.hseparator1]));
+		w96.Position = 3;
+		w96.Expand = false;
+		w96.Fill = false;
+		// Container child vboxPageTemplates.Gtk.Box+BoxChild
+		this.hboxCPMTemplate3 = new global::Gtk.HBox();
+		this.hboxCPMTemplate3.Name = "hboxCPMTemplate3";
+		this.hboxCPMTemplate3.Spacing = 6;
+		// Container child hboxCPMTemplate3.Gtk.Box+BoxChild
+		this.alignment10 = new global::Gtk.Alignment(0.5F, 0.5F, 1F, 1F);
+		this.alignment10.Name = "alignment10";
+		this.alignment10.LeftPadding = ((uint)(4));
+		// Container child alignment10.Gtk.Container+ContainerChild
+		this.label17 = new global::Gtk.Label();
+		this.label17.WidthRequest = 200;
+		this.label17.Name = "label17";
+		this.label17.Xalign = 0F;
+		this.label17.LabelProp = global::Mono.Unix.Catalog.GetString("Коды ТН ВЭД для группировки:");
+		this.alignment10.Add(this.label17);
+		this.hboxCPMTemplate3.Add(this.alignment10);
+		global::Gtk.Box.BoxChild w98 = ((global::Gtk.Box.BoxChild)(this.hboxCPMTemplate3[this.alignment10]));
+		w98.Position = 0;
+		w98.Expand = false;
+		w98.Fill = false;
+		// Container child hboxCPMTemplate3.Gtk.Box+BoxChild
+		this.filechooserIgnoreCodes = new global::Gtk.FileChooserButton(global::Mono.Unix.Catalog.GetString("Коды ТН ВЭД для группировки"), ((global::Gtk.FileChooserAction)(0)));
+		this.filechooserIgnoreCodes.Name = "filechooserIgnoreCodes";
+		this.hboxCPMTemplate3.Add(this.filechooserIgnoreCodes);
+		global::Gtk.Box.BoxChild w99 = ((global::Gtk.Box.BoxChild)(this.hboxCPMTemplate3[this.filechooserIgnoreCodes]));
+		w99.Position = 1;
+		this.vboxPageTemplates.Add(this.hboxCPMTemplate3);
+		global::Gtk.Box.BoxChild w100 = ((global::Gtk.Box.BoxChild)(this.vboxPageTemplates[this.hboxCPMTemplate3]));
+		w100.Position = 4;
+		w100.Expand = false;
+		w100.Fill = false;
+		// Container child vboxPageTemplates.Gtk.Box+BoxChild
 		this.hboxCPMTemplate2 = new global::Gtk.HBox();
 		this.hboxCPMTemplate2.Name = "hboxCPMTemplate2";
 		this.hboxCPMTemplate2.Spacing = 6;
@@ -1126,10 +1175,10 @@ public partial class MainWindow
 		this.label16.LabelProp = global::Mono.Unix.Catalog.GetString("Город отправителя:");
 		this.alignment9.Add(this.label16);
 		this.hboxCPMTemplate2.Add(this.alignment9);
-		global::Gtk.Box.BoxChild w97 = ((global::Gtk.Box.BoxChild)(this.hboxCPMTemplate2[this.alignment9]));
-		w97.Position = 0;
-		w97.Expand = false;
-		w97.Fill = false;
+		global::Gtk.Box.BoxChild w102 = ((global::Gtk.Box.BoxChild)(this.hboxCPMTemplate2[this.alignment9]));
+		w102.Position = 0;
+		w102.Expand = false;
+		w102.Fill = false;
 		// Container child hboxCPMTemplate2.Gtk.Box+BoxChild
 		this.entrySenderCity = new global::Gtk.Entry();
 		this.entrySenderCity.CanFocus = true;
@@ -1138,13 +1187,13 @@ public partial class MainWindow
 		this.entrySenderCity.IsEditable = true;
 		this.entrySenderCity.InvisibleChar = '●';
 		this.hboxCPMTemplate2.Add(this.entrySenderCity);
-		global::Gtk.Box.BoxChild w98 = ((global::Gtk.Box.BoxChild)(this.hboxCPMTemplate2[this.entrySenderCity]));
-		w98.Position = 1;
+		global::Gtk.Box.BoxChild w103 = ((global::Gtk.Box.BoxChild)(this.hboxCPMTemplate2[this.entrySenderCity]));
+		w103.Position = 1;
 		this.vboxPageTemplates.Add(this.hboxCPMTemplate2);
-		global::Gtk.Box.BoxChild w99 = ((global::Gtk.Box.BoxChild)(this.vboxPageTemplates[this.hboxCPMTemplate2]));
-		w99.Position = 3;
-		w99.Expand = false;
-		w99.Fill = false;
+		global::Gtk.Box.BoxChild w104 = ((global::Gtk.Box.BoxChild)(this.vboxPageTemplates[this.hboxCPMTemplate2]));
+		w104.Position = 5;
+		w104.Expand = false;
+		w104.Fill = false;
 		// Container child vboxPageTemplates.Gtk.Box+BoxChild
 		this.hboxCPMTemplate1 = new global::Gtk.HBox();
 		this.hboxCPMTemplate1.Name = "hboxCPMTemplate1";
@@ -1161,10 +1210,10 @@ public partial class MainWindow
 		this.label15.LabelProp = global::Mono.Unix.Catalog.GetString("Номер партии:");
 		this.alignment8.Add(this.label15);
 		this.hboxCPMTemplate1.Add(this.alignment8);
-		global::Gtk.Box.BoxChild w101 = ((global::Gtk.Box.BoxChild)(this.hboxCPMTemplate1[this.alignment8]));
-		w101.Position = 0;
-		w101.Expand = false;
-		w101.Fill = false;
+		global::Gtk.Box.BoxChild w106 = ((global::Gtk.Box.BoxChild)(this.hboxCPMTemplate1[this.alignment8]));
+		w106.Position = 0;
+		w106.Expand = false;
+		w106.Fill = false;
 		// Container child hboxCPMTemplate1.Gtk.Box+BoxChild
 		this.entryPartyNumber = new global::Gtk.Entry();
 		this.entryPartyNumber.CanFocus = true;
@@ -1173,20 +1222,19 @@ public partial class MainWindow
 		this.entryPartyNumber.IsEditable = true;
 		this.entryPartyNumber.InvisibleChar = '●';
 		this.hboxCPMTemplate1.Add(this.entryPartyNumber);
-		global::Gtk.Box.BoxChild w102 = ((global::Gtk.Box.BoxChild)(this.hboxCPMTemplate1[this.entryPartyNumber]));
-		w102.Position = 1;
+		global::Gtk.Box.BoxChild w107 = ((global::Gtk.Box.BoxChild)(this.hboxCPMTemplate1[this.entryPartyNumber]));
+		w107.Position = 1;
 		this.vboxPageTemplates.Add(this.hboxCPMTemplate1);
-		global::Gtk.Box.BoxChild w103 = ((global::Gtk.Box.BoxChild)(this.vboxPageTemplates[this.hboxCPMTemplate1]));
-		w103.Position = 4;
-		w103.Expand = false;
-		w103.Fill = false;
+		global::Gtk.Box.BoxChild w108 = ((global::Gtk.Box.BoxChild)(this.vboxPageTemplates[this.hboxCPMTemplate1]));
+		w108.Position = 6;
+		w108.Expand = false;
+		w108.Fill = false;
 		// Container child vboxPageTemplates.Gtk.Box+BoxChild
 		this.label9 = new global::Gtk.Label();
 		this.label9.Name = "label9";
-		this.label9.LabelProp = "";
 		this.vboxPageTemplates.Add(this.label9);
-		global::Gtk.Box.BoxChild w104 = ((global::Gtk.Box.BoxChild)(this.vboxPageTemplates[this.label9]));
-		w104.Position = 5;
+		global::Gtk.Box.BoxChild w109 = ((global::Gtk.Box.BoxChild)(this.vboxPageTemplates[this.label9]));
+		w109.Position = 7;
 		// Container child vboxPageTemplates.Gtk.Box+BoxChild
 		this.hbox8 = new global::Gtk.HBox();
 		this.hbox8.Name = "hbox8";
@@ -1199,11 +1247,11 @@ public partial class MainWindow
 		this.btnGenerate.UseUnderline = true;
 		this.btnGenerate.Label = global::Mono.Unix.Catalog.GetString("Сохранить");
 		this.hbox8.Add(this.btnGenerate);
-		global::Gtk.Box.BoxChild w105 = ((global::Gtk.Box.BoxChild)(this.hbox8[this.btnGenerate]));
-		w105.PackType = ((global::Gtk.PackType)(1));
-		w105.Position = 0;
-		w105.Expand = false;
-		w105.Fill = false;
+		global::Gtk.Box.BoxChild w110 = ((global::Gtk.Box.BoxChild)(this.hbox8[this.btnGenerate]));
+		w110.PackType = ((global::Gtk.PackType)(1));
+		w110.Position = 0;
+		w110.Expand = false;
+		w110.Fill = false;
 		// Container child hbox8.Gtk.Box+BoxChild
 		this.button6 = new global::Gtk.Button();
 		this.button6.WidthRequest = 80;
@@ -1212,19 +1260,19 @@ public partial class MainWindow
 		this.button6.UseUnderline = true;
 		this.button6.Label = global::Mono.Unix.Catalog.GetString("Назад");
 		this.hbox8.Add(this.button6);
-		global::Gtk.Box.BoxChild w106 = ((global::Gtk.Box.BoxChild)(this.hbox8[this.button6]));
-		w106.PackType = ((global::Gtk.PackType)(1));
-		w106.Position = 1;
-		w106.Expand = false;
-		w106.Fill = false;
+		global::Gtk.Box.BoxChild w111 = ((global::Gtk.Box.BoxChild)(this.hbox8[this.button6]));
+		w111.PackType = ((global::Gtk.PackType)(1));
+		w111.Position = 1;
+		w111.Expand = false;
+		w111.Fill = false;
 		this.vboxPageTemplates.Add(this.hbox8);
-		global::Gtk.Box.BoxChild w107 = ((global::Gtk.Box.BoxChild)(this.vboxPageTemplates[this.hbox8]));
-		w107.Position = 6;
-		w107.Expand = false;
-		w107.Fill = false;
+		global::Gtk.Box.BoxChild w112 = ((global::Gtk.Box.BoxChild)(this.vboxPageTemplates[this.hbox8]));
+		w112.Position = 8;
+		w112.Expand = false;
+		w112.Fill = false;
 		this.stackPages.Add(this.vboxPageTemplates);
-		global::Gtk.Notebook.NotebookChild w108 = ((global::Gtk.Notebook.NotebookChild)(this.stackPages[this.vboxPageTemplates]));
-		w108.Position = 3;
+		global::Gtk.Notebook.NotebookChild w113 = ((global::Gtk.Notebook.NotebookChild)(this.stackPages[this.vboxPageTemplates]));
+		w113.Position = 3;
 		// Notebook tab
 		this.label1 = new global::Gtk.Label();
 		this.label1.Name = "label1";

@@ -217,6 +217,7 @@ namespace XlsFormat
 			string savePath, 
 			BatchTableC batchTbl, 
 			CodesTableC codesTbl,
+			HashSet<UInt64> excludeList,
 			Car car,
 			Driver driver,
 			string number
@@ -242,7 +243,7 @@ namespace XlsFormat
 
 			//------
 			//вставляем таблицу со значениями
-			var insertTable = GetSpecificationTable(batchTbl, codesTbl);
+			var insertTable = GetSpecificationTable(batchTbl, codesTbl, excludeList);
 			ws.Cell(9, 1).InsertTable(insertTable);
 
 			int lastItemPos = insertTable.Rows.Count + 9;
@@ -425,7 +426,7 @@ namespace XlsFormat
 			return previtem;
 		}
 
-		public DataTable GetSpecificationTable(BatchTableC batchTbl, CodesTableC codesTbl)
+		public DataTable GetSpecificationTable(BatchTableC batchTbl, CodesTableC codesTbl, HashSet<UInt64> excludeList)
 		{
 			DataTable table = new DataTable();
 			table.TableName = "спецификация";
@@ -451,7 +452,6 @@ namespace XlsFormat
 
 			Random rnd = new Random();
 
-			var excludeList = new List<UInt64>{  850440 };
 			var specificationData = new Dictionary<UInt32, BidloProduct>();
 			var removed = new Dictionary<string, BidloProduct>();
 
@@ -479,106 +479,78 @@ namespace XlsFormat
 
 						bidloProducts.Remove(bidloProducts[i]);
 
-						BidloProduct item;
-						if (!removed.TryGetValue(tmp.code+"", out item))
+						for (var j = 0; j < bidloProducts.Count ; j++)
 						{
-							removed.Add(tmp.code+"", tmp);
-						}
-						else {
-							tmp.grossWeight += item.grossWeight;
-							tmp.price += item.price;
-							tmp.places += item.places;
-							tmp.netWeight += item.netWeight;
-							removed[tmp.code+""] = tmp;
-						}
-					}
-					else {
-						var ok = false;
-
-						while (!ok)
-						{
-							var tmp = bidloProducts[i];
-							BidloProduct item;
-							var code = ""+ tmp.code + "" + (rnd.Next(0, 99999999));
-							if (!removed.TryGetValue(code, out item))
+							if (bidloProducts[j].bagNumber == tmp.bagNumber)
 							{
-								removed.Add(code, tmp);
-								ok = true;
+								var item = bidloProducts[j];
+								tmp.grossWeight += item.grossWeight;
+								tmp.price += item.price;
+								tmp.places += item.places;
+								tmp.netWeight += item.netWeight;
+								bidloProducts[j] = tmp;
+								break;
 							}
 						}
+
 					}
-				}
-				else {
+
+				}else {
 					if (itemsWithSameName.ToArray().Count() > 1 && itemsWithSameBagNumber.ToArray().Count() > 1)
 					{
 						var tmp = bidloProducts[i];
 
 						bidloProducts.Remove(bidloProducts[i]);
 
-						BidloProduct item;
-						if (!removed.TryGetValue(tmp.code + "byname", out item))
+						for (var j = 0; j < bidloProducts.Count; j++)
 						{
-							removed.Add(tmp.code + "byname", tmp);
-						}
-						else {
-							tmp.grossWeight += item.grossWeight;
-							tmp.price += item.price;
-							tmp.places += item.places;
-							tmp.netWeight += item.netWeight;
-							removed[tmp.code + "byname"] = tmp;
-						}
-					}
-					else { 
-					
-						var ok = false;
-
-						while (!ok)
-						{
-							var tmp = bidloProducts[i];
-							BidloProduct item;
-							var code = tmp.code + "" + (rnd.Next(0, 99999999)) + "byname";
-							if (!removed.TryGetValue(code, out item))
+							if (bidloProducts[j].name.Equals(tmp.name))
 							{
-								removed.Add(code, tmp);
-								ok = true;
+								var item = bidloProducts[j];
+								tmp.grossWeight += item.grossWeight;
+								tmp.price += item.price;
+								tmp.places += item.places;
+								tmp.netWeight += item.netWeight;
+
+								bidloProducts[j] = tmp;
+								break;
 							}
 						}
-
 					}
 				}
 			}
 
 
-			//фиксим повторения
-			Dictionary<string, BidloProduct> fixedProducts = new Dictionary<string, BidloProduct>(200);
+			////фиксим повторения
+			//Dictionary<string, BidloProduct> fixedProducts = new Dictionary<string, BidloProduct>(200);
 
-			foreach (var entry in removed)
-			{
-				var item = entry.Value;
+			//foreach (var entry in removed)
+			//{
+			//	var item = entry.Value;
 
-				BidloProduct found;
-				var key = "" + item.code + "" + item.bagNumber;
+			//	BidloProduct found;
+			//	var key = "" + item.code + "" + item.bagNumber;
 
-				if (!fixedProducts.TryGetValue(key, out found))
-				{
-					fixedProducts.Add(key, item);
-				}
-				else {
-					var tmp = item;
+			//	if (!fixedProducts.TryGetValue(key, out found))
+			//	{
+			//		fixedProducts.Add(key, item);
+			//	}
+			//	else {
+			//		var tmp = item;
 
-					tmp.grossWeight += found.grossWeight;
-					tmp.price += found.price;
-					tmp.places += found.places;
-					tmp.netWeight += found.netWeight;
+			//		tmp.grossWeight += found.grossWeight;
+			//		tmp.price += found.price;
+			//		tmp.places += found.places;
+			//		tmp.netWeight += found.netWeight;
 
-					fixedProducts[key] = tmp;
-				}
-			}
+			//		fixedProducts[key] = tmp;
+			//	}
+			//}
 
 			var bagsUsed = new HashSet<UInt64>();
 			var num = 0;
-			foreach (var entry in fixedProducts) {
-				var item = entry.Value;
+			foreach (var entry in bidloProducts) {
+				var item = entry;
 				var bagPlace = 0;
 
 				if (!bagsUsed.Contains(item.bagNumber))

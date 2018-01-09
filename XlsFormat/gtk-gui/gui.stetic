@@ -6,7 +6,7 @@
   </configuration>
   <import>
     <widget-library name="glade-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
-    <widget-library name="../bin/Debug/XlsFormat.exe" internal="true" />
+    <widget-library name="../bin/Release/XlsFormat.exe" internal="true" />
   </import>
   <widget class="Gtk.Window" id="MainWindow" design-size="689 525">
     <property name="MemberName" />
@@ -91,7 +91,7 @@
                                 <property name="MemberName" />
                                 <property name="WidthRequest">200</property>
                                 <property name="Xalign">0</property>
-                                <property name="LabelProp" translatable="yes">Наименовани отправления:</property>
+                                <property name="LabelProp" translatable="yes">Наименование отправления:</property>
                               </widget>
                               <packing>
                                 <property name="Position">0</property>
@@ -1197,6 +1197,59 @@ C</property>
               </packing>
             </child>
             <child>
+              <widget class="Gtk.HSeparator" id="hseparator1">
+                <property name="MemberName" />
+              </widget>
+              <packing>
+                <property name="Position">3</property>
+                <property name="AutoSize">True</property>
+                <property name="Expand">False</property>
+                <property name="Fill">False</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Gtk.HBox" id="hboxCPMTemplate3">
+                <property name="MemberName" />
+                <property name="Spacing">6</property>
+                <child>
+                  <widget class="Gtk.Alignment" id="alignment10">
+                    <property name="MemberName" />
+                    <property name="LeftPadding">4</property>
+                    <child>
+                      <widget class="Gtk.Label" id="label17">
+                        <property name="MemberName" />
+                        <property name="WidthRequest">200</property>
+                        <property name="Xalign">0</property>
+                        <property name="LabelProp" translatable="yes">Коды ТН ВЭД для группировки:</property>
+                      </widget>
+                    </child>
+                  </widget>
+                  <packing>
+                    <property name="Position">0</property>
+                    <property name="AutoSize">True</property>
+                    <property name="Expand">False</property>
+                    <property name="Fill">False</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="Gtk.FileChooserButton" id="filechooserIgnoreCodes">
+                    <property name="MemberName" />
+                    <property name="Title" translatable="yes">Коды ТН ВЭД для группировки</property>
+                  </widget>
+                  <packing>
+                    <property name="Position">1</property>
+                    <property name="AutoSize">True</property>
+                  </packing>
+                </child>
+              </widget>
+              <packing>
+                <property name="Position">4</property>
+                <property name="AutoSize">True</property>
+                <property name="Expand">False</property>
+                <property name="Fill">False</property>
+              </packing>
+            </child>
+            <child>
               <widget class="Gtk.HBox" id="hboxCPMTemplate2">
                 <property name="MemberName" />
                 <property name="Spacing">6</property>
@@ -1235,7 +1288,7 @@ C</property>
                 </child>
               </widget>
               <packing>
-                <property name="Position">3</property>
+                <property name="Position">5</property>
                 <property name="AutoSize">True</property>
                 <property name="Expand">False</property>
                 <property name="Fill">False</property>
@@ -1280,7 +1333,7 @@ C</property>
                 </child>
               </widget>
               <packing>
-                <property name="Position">4</property>
+                <property name="Position">6</property>
                 <property name="AutoSize">True</property>
                 <property name="Expand">False</property>
                 <property name="Fill">False</property>
@@ -1289,10 +1342,9 @@ C</property>
             <child>
               <widget class="Gtk.Label" id="label9">
                 <property name="MemberName" />
-                <property name="LabelProp" translatable="yes" />
               </widget>
               <packing>
-                <property name="Position">5</property>
+                <property name="Position">7</property>
                 <property name="AutoSize">False</property>
               </packing>
             </child>
@@ -1338,7 +1390,7 @@ C</property>
                 </child>
               </widget>
               <packing>
-                <property name="Position">6</property>
+                <property name="Position">8</property>
                 <property name="AutoSize">True</property>
                 <property name="Expand">False</property>
                 <property name="Fill">False</property>

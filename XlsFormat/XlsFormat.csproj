@@ -64,6 +64,7 @@
     <Compile Include="CarsTableC.cs" />
     <Compile Include="CodesTableC.cs" />
     <Compile Include="PackingGeneratorC.cs" />
+    <Compile Include="IgnoreCodesC.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

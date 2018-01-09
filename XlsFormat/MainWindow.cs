@@ -303,10 +303,23 @@ public partial class MainWindow : Gtk.Window
 			}
 			else
 			{
+				HashSet<UInt64> ignoreCodes;
+
+				var ignoreFile = ExtractChooserPath(filechooserIgnoreCodes);
+				if (!string.IsNullOrEmpty(ignoreFile))
+				{
+					var ignoreCodesSource = new IgnoreCodesC(ignoreFile);
+					ignoreCodes = ignoreCodesSource.GetCodes();
+				}
+				else {
+					ignoreCodes = new HashSet<UInt64>();
+				}
+
 				generatorPacking.GenerateSpecification(ExtractChooserPath(filechooserTemplateSpecification), 
 				                                       path, 
 				                                       tableBatch, 
-				                                       tableCodes, 
+				                                       tableCodes,
+				                                       ignoreCodes,
 				                                       car, 
 				                                       driver,
 				                                       entryPartyNumber.Text);
@@ -336,7 +349,7 @@ public partial class MainWindow : Gtk.Window
 		new Gtk.FileChooserDialog("Выберите папку для сохранения",
 		this,
         FileChooserAction.SelectFolder,
-		"Омена", ResponseType.Cancel,
+		"Отмена", ResponseType.Cancel,
 		"Сохранить", ResponseType.Accept);
 
 		if (filechooser.Run() == (int)ResponseType.Accept)
